@@ -5,6 +5,8 @@ import okkapel.bombrush.render.TileRender.Tiler;
 
 public class Tile {
 	
+	public static final float DEFAULT_TILE_WIDTH = 48f;
+	
 	private static int indx = 0;
 	public static Tile[] tiles = new Tile[128];
 	
@@ -19,6 +21,7 @@ public class Tile {
 	private long flags = 0L;
 	private float speedModifier = 1f;
 	private Rect bounds;
+	private Tiler tire;
 	
 	public Tile() {
 		setFlag(Flag.COLLIDABLE, true);
@@ -36,23 +39,21 @@ public class Tile {
 	
 	public void renderParticles(ParticleRender fxr) {}
 	
-	public void setupRenderBuffer() {
-		
+	public void setupRender(Tiler t) {
+		t.addSprite(0, 0, DEFAULT_TILE_WIDTH, DEFAULT_TILE_WIDTH, 1f, 1f, 1f, 1f, 1f, null);
+		todo();
 	}
 	
 	public boolean getFlag(Flag flag) {
 		return (flags & (1 << flag.offset)) != 0;
 	}
 	
-	public final void setTiler(Tiler r) {
-		
+	public final void setTiler(Tiler t) {
+		this.tire = t;
 	}
 	
-	
-	
-	public static void init() {
-		int i = 0;
-		tiles[i++] = new Tile(); // air/empty
+	public final Tiler getTiler() {
+		return tire;
 	}
 	
 	/** @return air if no such tile was found or index out of bounds*/

@@ -37,6 +37,7 @@ public class RenderBufferGenerator {
 	
 	public void startCreatingBuffer(/*int dataTypes*/) {
 //		bufferDataTypes = dataTypes;
+		sprOffsAPos = 0;
 	}
 	
 	public void startCreatingSubBuffer(/*int dataTypes*/) {
