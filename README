@@ -1,0 +1,6 @@
+This is a game that is meant to be played against viewers in livestream chat.
+The viewers in the chat can write commands of form "&command params..." to
+affect the gameplay and attempt to defeat the streamer. The viewers can for
+example: spawn bombs, oil or tar on the ground, place mines or spawn enemies
+for the streamer to fight against.
+

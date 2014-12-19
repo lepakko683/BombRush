@@ -1,0 +1,15 @@
+
+# Typical unwanted stuff
+*.jar
+*.class
+/bin
+/jars
+
+# Eclipse
+*.classpath
+*.project
+.settings/
+
+# vim
+*.swp
+
