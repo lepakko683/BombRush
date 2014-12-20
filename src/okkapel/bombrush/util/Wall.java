@@ -13,7 +13,7 @@ public class Wall extends Tile implements Renderable {
 		coll = new Rect(x, y, w, h);
 		RenderBufferGenerator rbg = RenderBufferGenerator.INSTANCE;
 		rbg.startCreatingBuffer();
-		rbg.addRect2D(0f, 0f, w, h, 1f, .3f, .3f, .3f, 1f, 0f, 0f, 1f, 1f);
+		rbg.addRect2D(0f, 0f, w, h, 1f, .9f, .3f, .3f, 1f, 0f, 0f, 1f, 1f);
 		renderData = rbg.createBuffer();
 	}
 	

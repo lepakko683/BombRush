@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
 
 import okkapel.bombrush.render.ParticleRender;
+import okkapel.bombrush.render.TileRender;
 import okkapel.bombrush.util.Bomb;
 import okkapel.bombrush.util.Entity;
 import okkapel.bombrush.util.EntityMobile;
@@ -27,13 +28,15 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class BombRush {
 	
-	private static int texSheet = 0; // player, bomb, wall 
+	private static int texSheet = 0; // player, bomb 
 	private static int texFont = 0;
+	private static int texTiles = 0; // walls, tiles
 	
 	private static long lastCyc = System.currentTimeMillis();
 	private static int cycs = 0;
 	
 	private static ParticleRender fxRender;
+	private static TileRender tr;
 	
 	public static World currWorld = null;
 	
@@ -43,6 +46,10 @@ public class BombRush {
 	
 	public static int getSpriteTexId() {
 		return texSheet;
+	}
+	
+	public static int getTileTexId() {
+		return texTiles;
 	}
 	
 	public static void main(String[] args) {
@@ -69,6 +76,9 @@ public class BombRush {
 		Player plr = new Player();
 		currWorld = World.debugWorld;
 		
+		tr = new TileRender();
+		tr.init();
+		
 		int glerr = GL_NO_ERROR;
 		while(!shouldClose()) {
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -76,7 +86,7 @@ public class BombRush {
 			
 			if(System.currentTimeMillis() - 1000 > lastCyc) {
 				lastCyc = System.currentTimeMillis();
-//				System.out.println("FPS: " + cycs);
+				System.out.println("FPS: " + cycs);
 				cycs = 0;
 			} else {
 				cycs++;
@@ -85,7 +95,7 @@ public class BombRush {
 //			playerMove(bt);
 			playerMove(plr);
 			
-			currWorld.renderWorld();
+			currWorld.renderWorld(tr);
 			
 			bt.render();
 //			hello.render();
@@ -124,6 +134,7 @@ public class BombRush {
 	private static void load() {
 		texSheet = loadTexture("res/textures/textureSheet.png");
 		texFont = loadTexture("res/textures/font.png");
+		texTiles = loadTexture("res/textures/tiles.png");
 		
 		Bomb.bomb0 = new Sprite(texSheet, 0, 128, 16);
 		Bomb.fuse1 = new Sprite(texSheet, 1, 128, 16);

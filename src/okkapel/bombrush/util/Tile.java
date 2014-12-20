@@ -1,5 +1,6 @@
 package okkapel.bombrush.util;
 
+import okkapel.bombrush.BombRush;
 import okkapel.bombrush.render.ParticleRender;
 import okkapel.bombrush.render.TileRender.Tiler;
 
@@ -22,11 +23,17 @@ public class Tile {
 	private float speedModifier = 1f;
 	private Rect bounds;
 	private Tiler tire;
+	private int spriteId = 0;
 	
 	public Tile() {
 		setFlag(Flag.COLLIDABLE, true);
 //		bounds = new Rect(0f,0f, );
 		tiles[indx++] = this;
+	}
+	
+	public Tile(int spriteId) {
+		this();
+		this.spriteId = spriteId;
 	}
 
 	private void setFlag(Flag flag, boolean value) {
@@ -40,8 +47,7 @@ public class Tile {
 	public void renderParticles(ParticleRender fxr) {}
 	
 	public void setupRender(Tiler t) {
-		t.addSprite(0, 0, DEFAULT_TILE_WIDTH, DEFAULT_TILE_WIDTH, 1f, 1f, 1f, 1f, 1f, null);
-		todo();
+		t.addSprite(0, 0, DEFAULT_TILE_WIDTH, DEFAULT_TILE_WIDTH, 1f, 1f, 1f, 1f, 1f, new Sprite(BombRush.getTileTexId(), spriteId, 256, 16));
 	}
 	
 	public boolean getFlag(Flag flag) {
@@ -66,6 +72,10 @@ public class Tile {
 		}
 		return tiles[i];
 		
+	}
+	
+	public static int getTileCount() {
+		return indx;
 	}
 	
 	public static enum Flag {

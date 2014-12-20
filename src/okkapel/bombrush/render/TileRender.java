@@ -2,6 +2,9 @@ package okkapel.bombrush.render;
 
 import java.nio.ByteBuffer;
 
+import org.lwjgl.opengl.GL11;
+
+import okkapel.bombrush.BombRush;
 import okkapel.bombrush.util.Render;
 import okkapel.bombrush.util.RenderBufferGenerator;
 import okkapel.bombrush.util.Sprite;
@@ -31,10 +34,11 @@ public class TileRender {
 		renderData = rbg.createBuffer();
 	}
 	
-	public void renderTile(Tile t) {
-		Render.renderVA(renderData, t.getTiler().first, t.getTiler().count, 0);
-		todo(); // change to proper texture
-		
+	public void renderTile(Tile t, int x, int y) {
+		GL11.glPushMatrix();
+		GL11.glTranslatef(x*Tile.DEFAULT_TILE_WIDTH, y*Tile.DEFAULT_TILE_WIDTH, 0f);
+		Render.renderVA(renderData, t.getTiler().first, t.getTiler().count, BombRush.getTileTexId());
+		GL11.glPopMatrix();
 	}
 	
 	public static class Tiler {
