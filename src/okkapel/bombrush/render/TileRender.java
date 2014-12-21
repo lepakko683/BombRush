@@ -36,7 +36,7 @@ public class TileRender {
 	
 	public void renderTile(Tile t, int x, int y) {
 		GL11.glPushMatrix();
-		GL11.glTranslatef(x*Tile.DEFAULT_TILE_WIDTH, y*Tile.DEFAULT_TILE_WIDTH, 0f);
+		GL11.glTranslatef(x * Tile.DEFAULT_TILE_WIDTH, y * Tile.DEFAULT_TILE_WIDTH, 0f);
 		Render.renderVA(renderData, t.getTiler().first, t.getTiler().count, BombRush.getTileTexId());
 		GL11.glPopMatrix();
 	}

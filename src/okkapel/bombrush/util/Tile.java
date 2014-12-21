@@ -13,7 +13,7 @@ public class Tile {
 	
 	// Tiles
 	public static final Tile empty = new Tile();
-	public static final Tile undestrolite = new Tile();
+	public static final Tile undestrolite = new Tile(1);
 	public static final Tile hardstonite = new Tile();
 	public static final Tile stone = new Tile();
 	

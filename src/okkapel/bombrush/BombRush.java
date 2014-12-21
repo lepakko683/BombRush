@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import okkapel.bombrush.render.ChatHandler;
 import okkapel.bombrush.render.ParticleRender;
 import okkapel.bombrush.render.TileRender;
 import okkapel.bombrush.util.Bomb;
@@ -37,6 +38,7 @@ public class BombRush {
 	
 	private static ParticleRender fxRender;
 	private static TileRender tr;
+	private static ChatHandler ch;
 	
 	public static World currWorld = null;
 	
@@ -76,6 +78,8 @@ public class BombRush {
 		Player plr = new Player();
 		currWorld = World.debugWorld;
 		
+		ch = new ChatHandler();
+		
 		tr = new TileRender();
 		tr.init();
 		
@@ -100,6 +104,8 @@ public class BombRush {
 			bt.render();
 //			hello.render();
 			plr.render();
+			
+			ch.renderChat();
 			
 //			System.out.println("xdist: " + plr.getColl().xdistTo(currWorld.walls[0].coll) + " ydist: " + plr.getColl().ydistTo(currWorld.walls[0].coll));
 			

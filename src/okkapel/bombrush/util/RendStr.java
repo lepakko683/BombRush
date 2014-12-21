@@ -9,7 +9,8 @@ import okkapel.bombrush.BombRush;
 
 public class RendStr implements Renderable {
 	
-	private static final float charWidth = 1f/32f;
+	public static final float charWidth = 1f/32f;
+	public static final Sprite whitespace = new Sprite(0, 20, 256, 8);
 	
 	private String string;
 	private ByteBuffer renderData;
