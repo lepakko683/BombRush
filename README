@@ -4,3 +4,10 @@ affect the gameplay and attempt to defeat the streamer. The viewers can for
 example: spawn bombs, oil or tar on the ground, place mines or spawn enemies
 for the streamer to fight against.
 
+Dependencies:
+  - LWJGL (http://legacy.lwjgl.org/)
+    - jinput
+    - lwjgl_util
+    - lwjgl
+  - CelestiLib (https://github.com/Celestibytes/CelestiLib)
+
