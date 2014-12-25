@@ -1,6 +1,6 @@
 package okkapel.bombrush.command;
 
-import okkapel.bombrush.util.Player;
+import okkapel.bombrush.entity.Player;
 import okkapel.bombrush.util.World;
 
 public abstract class Command {

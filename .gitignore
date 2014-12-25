@@ -1,9 +1,8 @@
-
 # Typical unwanted stuff
 *.jar
 *.class
-/bin
-/jars
+bin/
+jars/
 
 # Eclipse
 *.classpath
@@ -13,3 +12,5 @@
 # vim
 *.swp
 
+# Temporary
+res/sounds/

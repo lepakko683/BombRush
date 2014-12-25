@@ -1,6 +1,9 @@
-package okkapel.bombrush.util;
+package okkapel.bombrush.entity;
 
 import java.nio.ByteBuffer;
+
+import okkapel.bombrush.util.Pos;
+import okkapel.bombrush.util.Rect;
 
 import org.lwjgl.opengl.GL11;
 

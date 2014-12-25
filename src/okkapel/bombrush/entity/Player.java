@@ -1,6 +1,12 @@
-package okkapel.bombrush.util;
+package okkapel.bombrush.entity;
 
 import java.nio.ByteBuffer;
+
+import okkapel.bombrush.util.AnimSprite;
+import okkapel.bombrush.util.Render;
+import okkapel.bombrush.util.RenderBufferGenerator;
+import okkapel.bombrush.util.Renderable;
+import okkapel.bombrush.util.Sprite;
 
 import org.lwjgl.opengl.GL11;
 
@@ -25,7 +31,8 @@ public class Player extends EntityMobile implements Renderable {
 	@Override
 	public void render() {
 		GL11.glPushMatrix();
-		GL11.glTranslatef(coll.x, coll.y, 0f);
+//		GL11.glTranslatef(coll.x, coll.y, 0f);
+		GL11.glTranslatef(720f/2f-coll.w/2f, 720f/2f-coll.h/2f, 0f);
 		
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

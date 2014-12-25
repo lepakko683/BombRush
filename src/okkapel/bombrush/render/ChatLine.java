@@ -17,6 +17,7 @@ public class ChatLine {
 	}
 	
 	protected void setText(String txt, ByteBuffer data) {
+		ccount = 0;
 		RBE rbe = RBE.INSTANCE;
 		rbe.attachBuffer(data);
 		rbe.setVertexOffset(rinfo.first);

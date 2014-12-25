@@ -46,50 +46,22 @@ public class ChatHandler {
 		
 		setupFont();
 		
-		chatDisplay = new PileList<ChatLine>(CHATLINE_MAX_COUNT, true, false);
+		chatDisplay = new PileList<ChatLine>(CHATLINE_MAX_COUNT, false, false);
 		
-		int firstv = 6;
-		
-		chatDisplay.addItem(new ChatLine(firstv, CHATLINE_MAX_LENGTH));
-		chatDisplay.getLast().setText("THESE", renderData);
-		firstv += CHATLINE_MAX_LENGTH*6;
-		
-		chatDisplay.addItem(new ChatLine(firstv, CHATLINE_MAX_LENGTH));
-		chatDisplay.getLast().setText("ARE", renderData);
-		firstv += CHATLINE_MAX_LENGTH*6;
-		
-		chatDisplay.addItem(new ChatLine(firstv, CHATLINE_MAX_LENGTH));
-		chatDisplay.getLast().setText("THE", renderData);
-		firstv += CHATLINE_MAX_LENGTH*6;
-		
-		chatDisplay.addItem(new ChatLine(firstv, CHATLINE_MAX_LENGTH));
-		chatDisplay.getLast().setText("FIRST", renderData);
-		firstv += CHATLINE_MAX_LENGTH*6;
-		
-		chatDisplay.addItem(new ChatLine(firstv, CHATLINE_MAX_LENGTH));
-		chatDisplay.getLast().setText("LINES", renderData);
-		firstv += CHATLINE_MAX_LENGTH*6;
-		
-		chatDisplay.addItem(new ChatLine(firstv, CHATLINE_MAX_LENGTH));
-		chatDisplay.getLast().setText("OF", renderData);
-		firstv += CHATLINE_MAX_LENGTH*6;
-		
-		chatDisplay.addItem(new ChatLine(firstv, CHATLINE_MAX_LENGTH));
-		chatDisplay.getLast().setText("TEXT", renderData);
-		firstv += CHATLINE_MAX_LENGTH*6;
-		
-		chatDisplay.addItem(new ChatLine(firstv, CHATLINE_MAX_LENGTH));
-		chatDisplay.getLast().setText("IN", renderData);
-		firstv += CHATLINE_MAX_LENGTH*6;
-		
-		chatDisplay.addItem(new ChatLine(firstv, CHATLINE_MAX_LENGTH));
-		chatDisplay.getLast().setText("THIS", renderData);
-		firstv += CHATLINE_MAX_LENGTH*6;
-		
-		chatDisplay.addItem(new ChatLine(firstv, CHATLINE_MAX_LENGTH));
-		chatDisplay.getLast().setText("CHAT", renderData);
-		firstv += CHATLINE_MAX_LENGTH*6;
-		
+	}
+	
+	private int firstv = 6;
+	public void postLine(String text) {
+		if(!chatDisplay.isFull()) {
+			chatDisplay.addItem(new ChatLine(firstv, CHATLINE_MAX_LENGTH));
+			chatDisplay.getLast().setText(text, renderData);
+			firstv += CHATLINE_MAX_LENGTH*6;
+		} else {
+			ChatLine cl = chatDisplay.popFirst();
+			cl.setText(text, renderData);
+			chatDisplay.addItem(cl);
+//			System.out.println("cl text: " + chatDisplay.getLast().getText());
+		}
 	}
 	
 	private void setupFont() {
@@ -108,18 +80,32 @@ public class ChatHandler {
 		rbe.finishEditing();
 	}
 	
+	
+	private int slower = 10;
+	private int countr = 70;
 	public void renderChat() {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
 		Render.renderVA(renderData, 0, 6, 0);
 		
-		float yoffs = 720f-fontSize*2;
-		Iterator<ChatLine> iter = chatDisplay.getItemIterator(true);
-		while(iter.hasNext()) {
-			renderChatLine(0f, yoffs, iter.next());
-			yoffs -= fontSize;
+		if(slower < 1) {
+			postLine("HELLO " + countr);
+//			System.out.println(chatDisplay.getLast().getText());
+			slower = 10;
+			countr++;
 		}
+		slower--;
+		
+		if(chatDisplay.getLast() != null) {
+			float yoffs = 720f-fontSize*2;
+			Iterator<ChatLine> iter = chatDisplay.getItemIterator(true);
+			do {
+				renderChatLine(0f, yoffs, iter.next());
+				yoffs -= fontSize;
+			} while(iter.hasNext());
+		}
+		
 		
 		GL11.glDisable(GL11.GL_BLEND);
 	}

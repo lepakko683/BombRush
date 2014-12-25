@@ -1,6 +1,10 @@
-package okkapel.bombrush.util;
+package okkapel.bombrush.entity;
 
 import okkapel.bombrush.BombRush;
+import okkapel.bombrush.util.MathHelper;
+import okkapel.bombrush.util.Rect;
+import okkapel.bombrush.util.Wall;
+import okkapel.bombrush.util.World;
 
 public class EntityMobile extends Entity {
 	protected float dx = 0f, dy = 0f;
@@ -61,6 +65,30 @@ public class EntityMobile extends Entity {
 			ndx = 0f;
 			ndy = 0f;
 		}
+		
+		Rect wbo = BombRush.currWorld.getWorldBounds();
+		if(dx < 0f) {
+			if(coll.x+dx < wbo.x && coll.x >= wbo.x) {
+				dx = coll.x-wbo.x;
+			}
+		}
+		if(dx > 0f) {
+			if(coll.x+dx+coll.h > wbo.x+wbo.w && coll.x <= wbo.x+wbo.w) {
+				dx = (wbo.x+wbo.w)-(coll.x+coll.h);
+			}
+		}
+		
+		if(dy < 0f) {
+			if(coll.y+dy < wbo.y && coll.y >= wbo.y) {
+				dy = coll.y-wbo.y;
+			}
+		}
+		if(dy > 0f) {
+			if(coll.y+dy+coll.h > wbo.y+wbo.h && coll.y <= wbo.y+wbo.h) {
+				dy = (wbo.y+wbo.h)-(coll.y+coll.h);
+			}
+		}
+		
 		coll.x += dx;
 		coll.y += dy;
 		dx = 0;

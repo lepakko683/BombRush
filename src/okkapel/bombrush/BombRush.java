@@ -6,13 +6,14 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import okkapel.bombrush.entity.Bomb;
+import okkapel.bombrush.entity.Entity;
+import okkapel.bombrush.entity.EntityMobile;
+import okkapel.bombrush.entity.Player;
 import okkapel.bombrush.render.ChatHandler;
 import okkapel.bombrush.render.ParticleRender;
 import okkapel.bombrush.render.TileRender;
-import okkapel.bombrush.util.Bomb;
-import okkapel.bombrush.util.Entity;
-import okkapel.bombrush.util.EntityMobile;
-import okkapel.bombrush.util.Player;
+import okkapel.bombrush.util.Advancer;
 import okkapel.bombrush.util.RendStr;
 import okkapel.bombrush.util.Sprite;
 import okkapel.bombrush.util.Tile;
@@ -22,7 +23,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -30,8 +30,9 @@ import static org.lwjgl.opengl.GL11.*;
 public class BombRush {
 	
 	private static int texSheet = 0; // player, bomb 
-	private static int texFont = 0;
+	private static int texFont = 0;  // characters
 	private static int texTiles = 0; // walls, tiles
+	private static int texParts = 0; // particles
 	
 	private static long lastCyc = System.currentTimeMillis();
 	private static int cycs = 0;
@@ -39,6 +40,7 @@ public class BombRush {
 	private static ParticleRender fxRender;
 	private static TileRender tr;
 	private static ChatHandler ch;
+	private static Advancer advcr;
 	
 	public static World currWorld = null;
 	
@@ -52,6 +54,14 @@ public class BombRush {
 	
 	public static int getTileTexId() {
 		return texTiles;
+	}
+	
+	public static int getPartTexId() {
+		return texParts;
+	}
+	
+	public static Advancer getAdvcr() {
+		return advcr;
 	}
 	
 	public static void main(String[] args) {
@@ -71,6 +81,8 @@ public class BombRush {
 		} catch(Throwable e) {
 			e.printStackTrace();
 		}
+		
+		advcr = new Advancer();
 		
 		Bomb bt = new Bomb(60*5);
 		RendStr hello = new RendStr("TICK: ", 64f, 0f, 0f);
@@ -98,9 +110,11 @@ public class BombRush {
 			
 //			playerMove(bt);
 			playerMove(plr);
-			
+			glPushMatrix();
+			glTranslatef(720f/2f-plr.getColl().w/2f-plr.getX(), 720f/2f-plr.getColl().h/2f-plr.getY(), 0f);
 			currWorld.renderWorld(tr);
 			
+			glPopMatrix();
 			bt.render();
 //			hello.render();
 			plr.render();
@@ -109,6 +123,7 @@ public class BombRush {
 			
 //			System.out.println("xdist: " + plr.getColl().xdistTo(currWorld.walls[0].coll) + " ydist: " + plr.getColl().ydistTo(currWorld.walls[0].coll));
 			
+			advcr.advanceAll(1);
 			
 			glerr = glGetError();
 			if(glerr != GL_NO_ERROR) {
@@ -125,6 +140,8 @@ public class BombRush {
 		
 		delTex(texSheet);
 		delTex(texFont);
+		delTex(texTiles);
+		delTex(texParts);
 	}
 	
 	private static boolean shouldClose() {
@@ -141,6 +158,7 @@ public class BombRush {
 		texSheet = loadTexture("res/textures/textureSheet.png");
 		texFont = loadTexture("res/textures/font.png");
 		texTiles = loadTexture("res/textures/tiles.png");
+		texParts = loadTexture("res/textures/particles.png");
 		
 		Bomb.bomb0 = new Sprite(texSheet, 0, 128, 16);
 		Bomb.fuse1 = new Sprite(texSheet, 1, 128, 16);
@@ -193,7 +211,7 @@ public class BombRush {
 			
 			glBindTexture(GL_TEXTURE_2D, tex);
 			
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, img.getWidth(), img.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buf);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, img.getWidth(), img.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 			
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
