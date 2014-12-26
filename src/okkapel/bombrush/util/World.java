@@ -32,11 +32,24 @@ public abstract class World {
 	
 	public Wall[] walls; // TODO: remove
 	public short[] tiles;
+	
+	private int worldWidth;
+	private int worldHeight;
 
 	
 	private World() {
+		worldWidth = DEFAULT_WORLD_WIDTH;
+		worldHeight = DEFAULT_WORLD_WIDTH;
 		setupWorld();
 		entities = new LinkedList<Entity>();
+	}
+	
+	public int getWorldWidth() {
+		return worldWidth;
+	}
+	
+	public int getWorldHeight() {
+		return worldHeight;
 	}
 	
 	public Rect getWorldBounds() {
@@ -51,10 +64,16 @@ public abstract class World {
 		Entity tr;
 		while(iter.hasNext()) {
 			tr = iter.next();
+			tr.update();
+			
 			if(tr instanceof Renderable) {
 				((Renderable)tr).render();
 			}
 		}
+	}
+	
+	public void spawnEntity(Entity e) {
+		e.setWorldRef(this);
 	}
 	
 	public void renderWorld(TileRender tr) {
@@ -68,19 +87,25 @@ public abstract class World {
 	}
 	
 	protected void generateRandomWorld(long seed, boolean useSeed) {
-		tiles = new short[DEFAULT_WORLD_WIDTH * DEFAULT_WORLD_WIDTH];
-		wbounds = new Rect(0f,0f,DEFAULT_WORLD_WIDTH*Tile.DEFAULT_TILE_WIDTH,DEFAULT_WORLD_WIDTH*Tile.DEFAULT_TILE_WIDTH);
+		worldWidth = DEFAULT_WORLD_WIDTH;
+		worldHeight = DEFAULT_WORLD_WIDTH;
+		
+		tiles = new short[worldWidth * worldHeight];
+		wbounds = new Rect(0f,0f,worldWidth*Tile.DEFAULT_TILE_WIDTH,worldHeight*Tile.DEFAULT_TILE_WIDTH);
 		Random rand = null;
 		
 		if(useSeed) {
-			rand = new Random(seed);
+			rand = new Random(32234512);
 		} else {
 			rand = new Random();
 		}
-		int max = Tile.getTileCount();
+		
+//		int max = Tile.getTileCount();
+		int max = 2;
 		for(int i=0;i<tiles.length;i++) {
 			tiles[i] = (short) rand.nextInt(max);
 		}
+		tiles[7*worldWidth+4] = (short)Tile.empty.id;
 	}
 	
 	protected abstract void setupWorld();

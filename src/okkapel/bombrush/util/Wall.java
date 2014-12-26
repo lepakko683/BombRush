@@ -4,7 +4,8 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.opengl.GL11;
 
-public class Wall extends Tile implements Renderable {
+@Deprecated
+public class Wall implements Renderable {
 
 	public Rect coll;
 	private ByteBuffer renderData;
@@ -15,6 +16,10 @@ public class Wall extends Tile implements Renderable {
 		rbg.startCreatingBuffer();
 		rbg.addRect2D(0f, 0f, w, h, 1f, .9f, .3f, .3f, 1f, 0f, 0f, 1f, 1f);
 		renderData = rbg.createBuffer();
+	}
+	
+	public Wall(){
+		coll = new Rect(0f, 0f, 0f, 0f);
 	}
 	
 	@Override

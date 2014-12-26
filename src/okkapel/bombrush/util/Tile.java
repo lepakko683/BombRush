@@ -19,6 +19,7 @@ public class Tile {
 	
 	
 	// Tile properties
+	public final int id;
 	private long flags = 0L;
 	private float speedModifier = 1f;
 	private Rect bounds;
@@ -26,7 +27,10 @@ public class Tile {
 	private int spriteId = 0;
 	
 	public Tile() {
-		setFlag(Flag.COLLIDABLE, true);
+		id = indx;
+		if(indx != 0) { 
+			setFlag(Flag.COLLIDABLE, true);
+		}
 //		bounds = new Rect(0f,0f, );
 		tiles[indx++] = this;
 	}
