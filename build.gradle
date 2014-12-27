@@ -1,3 +1,7 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
 repositories {
 	mavenCentral()
 	maven {
@@ -11,6 +15,34 @@ dependencies {
 	compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.1'
 	compile 'io.github.celestibytes:CelestiLib:0.7.0-SNAPSHOT'
 }
+
+def platforms = ['windows', 'linux', 'osx']
+
+platforms.each { platform ->
+    task "${platform}Natives" {
+        def outputDir = "$buildDir/natives/$platform"
+        inputs.files(configurations.compile)
+        outputs.dir(outputDir)
+        doLast {
+            copy {
+                def artifacts = configurations.compile.resolvedConfiguration.resolvedArtifacts
+                    .findAll { it.classifier == "natives-$platform" }
+                artifacts.each { 
+                    from zipTree(it.file)
+                }            
+                into outputDir
+            }
+        }
+    }
+}
+
+task natives {
+    description "Copies native libraries to an appropriate directory."
+    dependsOn platforms.collect { "${it}Natives" }.findAll { tasks[it] }
+}
+
+tasks.eclipse.dependsOn natives
+tasks.idea.dependsOn natives
 
 ext.configFile = file "build.properties"
 
@@ -57,6 +89,17 @@ else
 
 group = "io.github.celestibytes"
 archivesBaseName = project.getName()
+
+sourceSets {
+	main {
+		java {
+			srcDir "src/"
+		}
+		resources {
+			srcDir "res/"
+		}
+	}
+}
 
 tasks.withType(JavaCompile) {
     options.incremental = true
