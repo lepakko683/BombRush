@@ -13,15 +13,13 @@ import okkapel.bombrush.render.TileRender;
 public abstract class World {
 	
 	/** In tiles */
-	public static final int DEFAULT_WORLD_WIDTH = 16;
+	public static final int DEFAULT_WORLD_WIDTH = 31;
+	
+//	/** In tiles */
+//	public static final int DEFAULT_WORLD_HEIGHT = 31; TODO
 	
 	public static final World debugWorld = new World() {
 		protected void setupWorld() {
-			walls = new Wall[2];
-//			walls = new Wall[1];
-			walls[0] = new Wall(64f, 64f, 32f, 32f);
-			walls[1] = new Wall(64f+32f+48f, 64f, 32f, 32f);
-			
 //			tiles = new short[1];
 			generateRandomWorld(683, true);
 		};
@@ -30,7 +28,6 @@ public abstract class World {
 	private Rect wbounds;
 	private List<Entity> entities;
 	
-	public Wall[] walls; // TODO: remove
 	public short[] tiles;
 	
 	private int worldWidth;
@@ -80,10 +77,6 @@ public abstract class World {
 		for(int i=0;i<tiles.length;i++) {
 			tr.renderTile(Tile.getTileFor(tiles[i]), i%DEFAULT_WORLD_WIDTH, (int)(i/DEFAULT_WORLD_WIDTH));
 		}
-		
-		for(int i=0;i<walls.length;i++) {
-			walls[i].render();
-		}
 	}
 	
 	protected void generateRandomWorld(long seed, boolean useSeed) {
@@ -91,7 +84,7 @@ public abstract class World {
 		worldHeight = DEFAULT_WORLD_WIDTH;
 		
 		tiles = new short[worldWidth * worldHeight];
-		wbounds = new Rect(0f,0f,worldWidth*Tile.DEFAULT_TILE_WIDTH,worldHeight*Tile.DEFAULT_TILE_WIDTH);
+		wbounds = new Rect(0f, 0f, worldWidth * Tile.DEFAULT_TILE_WIDTH, worldHeight * Tile.DEFAULT_TILE_WIDTH);
 		Random rand = null;
 		
 		if(useSeed) {
@@ -102,10 +95,50 @@ public abstract class World {
 		
 //		int max = Tile.getTileCount();
 		int max = 2;
-		for(int i=0;i<tiles.length;i++) {
-			tiles[i] = (short) rand.nextInt(max);
+		
+		for(int y=0;y<worldHeight;y++) {
+			for(int x=0;x<worldWidth;x++) {
+				if(y != 0 && x != 0 && y != (worldHeight-1) && x != (worldWidth-1)) {
+					if(x % 2 == 1 && y % 2 == 1) {
+						tiles[y*worldWidth+x] = (short)Tile.undestrolite.id;
+					}
+				}
+			}
 		}
-		tiles[7*worldWidth+4] = (short)Tile.empty.id;
+		
+		clearPlayerSpawn(0);
+		clearPlayerSpawn(1);
+		clearPlayerSpawn(2);
+		clearPlayerSpawn(3);
+		
+		
+//		tiles[7*worldWidth+4] = (short)Tile.empty.id;
+	}
+	
+	/** 0=top-left, 1=top-right, 2=bottom-right, 3=bottom-left */
+	protected void clearPlayerSpawn(int corner) {
+		switch(corner%4) {
+		case 0:
+			tiles[0]=(short)Tile.empty.id;
+			tiles[1]=(short)Tile.empty.id;
+			tiles[worldWidth]=(short)Tile.empty.id;
+			break;
+		case 1:
+			tiles[worldWidth-2]=(short)Tile.empty.id;
+			tiles[worldWidth-1]=(short)Tile.empty.id;
+			tiles[worldWidth*2-1]=(short)Tile.empty.id;
+			break;
+		case 2:
+			tiles[worldWidth*worldHeight-worldWidth-1]=(short)Tile.empty.id;
+			tiles[worldWidth*worldHeight-2]=(short)Tile.empty.id;
+			tiles[worldWidth*worldHeight-1]=(short)Tile.empty.id;
+			break;
+		case 3:
+			tiles[worldWidth*worldHeight-worldWidth-worldWidth]=(short)Tile.empty.id;
+			tiles[worldWidth*worldHeight-worldWidth]=(short)Tile.empty.id;
+			tiles[worldWidth*worldHeight-worldWidth+1]=(short)Tile.empty.id;
+			break;
+		}
 	}
 	
 	protected abstract void setupWorld();
