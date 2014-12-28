@@ -7,6 +7,7 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
+import okkapel.bombrush.BombRush;
 import okkapel.bombrush.entity.Entity;
 import okkapel.bombrush.render.TileRender;
 
@@ -62,15 +63,23 @@ public abstract class World {
 		while(iter.hasNext()) {
 			tr = iter.next();
 			tr.update();
-			
-			if(tr instanceof Renderable) {
-				((Renderable)tr).render();
+			if(tr.isDead()) {
+				iter.remove();
+			} else {
+				if(tr instanceof Renderable && tr != BombRush.getPlayer()) {
+					((Renderable)tr).render();
+				}
 			}
 		}
 	}
 	
+	public boolean isEmpty(int x, int y) {
+		return tiles[y*worldWidth+x] == Tile.empty.id;
+	}
+	
 	public void spawnEntity(Entity e) {
 		e.setWorldRef(this);
+		entities.add(e);
 	}
 	
 	public void renderWorld(TileRender tr) {

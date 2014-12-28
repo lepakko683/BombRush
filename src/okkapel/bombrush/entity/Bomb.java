@@ -54,8 +54,8 @@ public class Bomb extends EntityMobile implements Renderable {
 		}
 		
 		fuse--;
-		if(fuse < 0) {
-			fuse = maxFuse;
+		if(fuse < 59) {
+			dead = true;
 		}
 		
 		float fuseLeft = (float)(fuse) / (float)(maxFuse);

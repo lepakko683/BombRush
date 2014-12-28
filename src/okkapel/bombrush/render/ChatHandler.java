@@ -15,7 +15,10 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import celestibytes.lib.util.PileList;
+import okkapel.bombrush.BombRush;
 import okkapel.bombrush.command.Command;
+import okkapel.bombrush.command.CommandSpawnBomb;
+import okkapel.bombrush.command.ParamType;
 import okkapel.bombrush.util.IRCMsg;
 import okkapel.bombrush.util.RBE;
 import okkapel.bombrush.util.RendStr;
@@ -40,11 +43,12 @@ public class ChatHandler {
 	
 	
 	public ChatHandler() {
+		cmdHandlers = new ArrayList<Command>();
+		cmdHandlers.add(new CommandSpawnBomb());
+		
 		chatHook = new ChatHook("#lepakko683");
 		startChatHook();
 		
-		
-		cmdHandlers = new ArrayList<Command>();
 		renderData = BufferUtils.createByteBuffer(6 * RenderBufferGenerator.DEFAULT_GL_STRIDE + (CHATLINE_MAX_COUNT + 1) * CHATLINE_MAX_LENGTH * 6 * RenderBufferGenerator.DEFAULT_GL_STRIDE);
 		renderData.position(0);
 		renderData.limit(renderData.capacity());
@@ -124,13 +128,6 @@ public class ChatHandler {
 			chRegl--;
 		}
 		
-//		if(slower < 1) {
-//			postLine("HELLO " + countr);
-//			slower = 10;
-//			countr++;
-//		}
-//		slower--;
-		
 		if(chatDisplay.getLast() != null) {
 			float yoffs = 720f-fontSize*2;
 			Iterator<ChatLine> iter = chatDisplay.getItemIterator(true);
@@ -153,10 +150,24 @@ public class ChatHandler {
 		GL11.glPopMatrix();
 	}
 	
-	public void onMessageReceive(String msgText) {
-		if(!msgText.startsWith("&")) {
-			return; // TODO: currently filter the in-game chat to commands only, might have an option for this in future
+	/** Handle the clean command string (without the '&' prefix) */
+	public void onCommandReceive(String s) {
+//		System.out.println("Cmd info(" + s + "):" + " Integer: " + ParamType.INTEGER.isOfParamType(s) + " Decimal: " + ParamType.DECIMAL.isOfParamType(s) + " Boolean: " + ParamType.BOOLEAN.isOfParamType(s));
+		for(int i=0;i<cmdHandlers.size();i++) {
+			String[] params = s.split(" ");
+			if(cmdHandlers.get(i).isHandlerFor(params[0])) {
+				
+				if(params.length == 1) {
+					cmdHandlers.get(i).attemptHandle(BombRush.getPlayer(), null);					
+				} else {
+					String[] rpars = new String[params.length-1];
+					System.arraycopy(params, 1, rpars, 0, rpars.length);
+					cmdHandlers.get(i).attemptHandle(BombRush.getPlayer(), rpars);
+				}
+				return;
+			}
 		}
+		System.out.println("No handler found!");
 	}
 	
 	private void readMsgLines() {
@@ -277,6 +288,9 @@ public class ChatHandler {
 			} else if("PRIVMSG".equals(m.command)) {
 				String toAdd = m.getDataAsString();
 				if(toAdd != null) {
+					if("jtv".equals(m.getUser())) {
+						return;
+					}
 					canRead = false;
 					recvMsgs.add(m.getUser() + ": " + m.getPMMsg());
 					canRead = true;
@@ -327,6 +341,11 @@ public class ChatHandler {
 				String line = iter.next();
 				System.out.println("Posted: " + line);
 				if(line != null) {
+					int cmds = line.indexOf(":")+2;
+					if(line.charAt(cmds) == Command.COMMAND_PREFIXC) {
+						ch.onCommandReceive(line.substring(cmds+1)); // Excluding the &
+					}
+					
 					ch.postLine(line.toUpperCase());
 				}
 				iter.remove();

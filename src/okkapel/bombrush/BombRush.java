@@ -41,6 +41,7 @@ public class BombRush {
 	private static TileRender tr;
 	private static ChatHandler ch;
 	private static Advancer advcr;
+	private static Player thePlayer;
 	
 	public static World currWorld = null;
 	
@@ -62,6 +63,10 @@ public class BombRush {
 	
 	public static Advancer getAdvcr() {
 		return advcr;
+	}
+	
+	public static Player getPlayer() {
+		return thePlayer;
 	}
 	
 	public static void main(String[] args) {
@@ -87,8 +92,12 @@ public class BombRush {
 		Bomb bt = new Bomb(60*5);
 		RendStr hello = new RendStr("TICK: ", 64f, 0f, 0f);
 		int ticks = 0;
-		Player plr = new Player();
 		currWorld = World.debugWorld;
+		
+		thePlayer = new Player();
+		
+		currWorld.spawnEntity(thePlayer);
+		currWorld.spawnEntity(bt);
 		
 		ch = new ChatHandler();
 		
@@ -109,15 +118,16 @@ public class BombRush {
 			}
 			
 //			playerMove(bt);
-			playerMove(plr);
+			playerMove(thePlayer);
 			glPushMatrix();
-			glTranslatef(720f/2f-plr.getColl().w/2f-plr.getX(), 720f/2f-plr.getColl().h/2f-plr.getY(), 0f);
-			currWorld.renderWorld(tr);
+			glTranslatef(720f/2f-thePlayer.getColl().w/2f-thePlayer.getX(), 720f/2f-thePlayer.getColl().h/2f-thePlayer.getY(), 0f);
+//			currWorld.renderWorld(tr);
+			currWorld.render(tr);
 			
 			glPopMatrix();
 			bt.render();
 //			hello.render();
-			plr.render();
+			thePlayer.render();
 			
 			ch.renderChat();
 			
