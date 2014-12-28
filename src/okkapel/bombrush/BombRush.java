@@ -102,7 +102,7 @@ public class BombRush {
 			
 			if(System.currentTimeMillis() - 1000 > lastCyc) {
 				lastCyc = System.currentTimeMillis();
-				System.out.println("FPS: " + cycs);
+//				System.out.println("FPS: " + cycs);
 				cycs = 0;
 			} else {
 				cycs++;
@@ -137,6 +137,7 @@ public class BombRush {
 			Display.update();
 			Display.sync(60);
 		}
+		ch.onGameExit();
 		
 		delTex(texSheet);
 		delTex(texFont);
@@ -190,7 +191,7 @@ public class BombRush {
 			
 			int[] pixels = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
 			
-			ByteBuffer buf = BufferUtils.createByteBuffer(4*pixels.length);
+			ByteBuffer buf = BufferUtils.createByteBuffer(4 * pixels.length);
 			int pix = 0;
 			
 			for(int i=0;i<pixels.length;i++) {

@@ -30,7 +30,6 @@ public class ChatLine {
 				xind = ((int)c) % 32;
 				yind = (int) ((int)c) / 32;
 				rbe.editRect2DUV(xind*RendStr.charWidth, yind*RendStr.charWidth, (xind+1)*RendStr.charWidth, (yind+1)*RendStr.charWidth);
-				
 				ccount++;
 			}
 			
