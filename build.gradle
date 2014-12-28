@@ -1,0 +1,179 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+repositories {
+	mavenCentral()
+	maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+dependencies {
+	compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'
+	compile 'org.lwjgl.lwjgl:lwjgl_util:2.9.1'
+	compile 'io.github.celestibytes:CelestiLib:0.7.0-SNAPSHOT'
+}
+
+def platforms = ['windows', 'linux', 'osx']
+
+platforms.each { platform ->
+    task "${platform}Natives" {
+        def outputDir = "$buildDir/natives/$platform"
+        inputs.files(configurations.compile)
+        outputs.dir(outputDir)
+        doLast {
+            copy {
+                def artifacts = configurations.compile.resolvedConfiguration.resolvedArtifacts
+                    .findAll { it.classifier == "natives-$platform" }
+                artifacts.each { 
+                    from zipTree(it.file)
+                }            
+                into outputDir
+            }
+        }
+    }
+}
+
+task natives {
+    description "Copies native libraries to an appropriate directory."
+    dependsOn platforms.collect { "${it}Natives" }.findAll { tasks[it] }
+}
+
+tasks.eclipse.dependsOn natives
+tasks.idea.dependsOn natives
+
+ext.configFile = file "build.properties"
+
+configFile.withReader {
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+}
+
+ext.patch = config.patch_number
+ext.resetPatch = false
+
+if (!config.last_release.equals(config.version))
+{
+    ext.patch = 0
+
+    if (gradle.startParameter.taskNames.contains("release"))
+    {
+        ext.resetPatch = true
+    }
+}
+
+if (!config.dev_version.equals(config.version))
+{
+    ext.patch = 0
+}
+
+if (gradle.startParameter.taskNames.contains("release"))
+{
+    version = "${config.version}.${ext.patch}"
+}
+else if (gradle.startParameter.taskNames.contains("buildPublic"))
+{
+    version = "${config.dev_version}.${ext.patch}.public.${config.build_number}"
+}
+else if (System.getenv("TRAVIS") || System.getenv("TRAVIS").equals("true"))
+{
+    version = "${config.dev_version}.${ext.patch}-SNAPSHOT"
+}
+else
+{
+    version = "${config.dev_version}.${ext.patch}.dev.${config.build_number}"
+}
+
+group = "io.github.celestibytes"
+archivesBaseName = project.getName()
+
+sourceSets {
+	main {
+		java {
+			srcDir "src/"
+		}
+		resources {
+			srcDir "res/"
+		}
+	}
+}
+
+tasks.withType(JavaCompile) {
+    options.incremental = true
+}
+
+task handleVersion {
+    onlyIf {
+        !gradle.startParameter.taskNames.contains("buildPublic")
+    }
+
+    doLast {
+        config.build_number = (config.build_number.toString().toInteger()) + 1
+        configFile.withWriter {
+            config.toProperties().store(it, "")
+        }
+
+        if (project.resetPatch)
+        {
+            config.patch_number = 1
+            configFile.withWriter {
+                config.toProperties().store(it, "")
+            }
+
+            config.last_new_release = true
+            configFile.withWriter {
+                config.toProperties().store(it, "")
+            }
+
+            config.last_release = config.mod_version
+            configFile.withWriter {
+                config.toProperties().store(it, "")
+            }
+        }
+        else if (gradle.startParameter.taskNames.contains("release"))
+        {
+            config.patch_number = (config.patch_number.toString().toInteger()) + 1
+            configFile.withWriter {
+                config.toProperties().store(it, "")
+            }
+
+            config.last_new_release = false
+            configFile.withWriter {
+                config.toProperties().store(it, "")
+            }
+
+            config.last_release = config.mod_version
+            configFile.withWriter {
+                config.toProperties().store(it, "")
+            }
+        }
+
+        def dev = config.dev_version.toString().tokenize('.');
+        def ver = config.mod_version.toString().tokenize('.');
+
+        if ((dev.get(0).toInteger() < ver.get(0).toInteger()) || (dev.get(1).toInteger() < ver.get(1).toInteger()))
+        {
+            config.dev_version = config.mod_version
+            configFile.withWriter {
+                config.toProperties().store(it, "")
+            }
+        }
+    }
+}
+
+tasks.build.dependsOn handleVersion
+
+task buildPublic(dependsOn: ['build', 'reobf', 'deobfJar']) {
+    doLast {
+        logger.lifecycle "I think I'm done"
+    }
+}
+
+task release(dependsOn: ['uploadArchives', 'build', 'reobf', 'deobfJar']) {
+    doLast {
+        logger.lifecycle "I think I'm done"
+    }
+}
