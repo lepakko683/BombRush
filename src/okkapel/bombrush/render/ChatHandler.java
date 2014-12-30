@@ -46,6 +46,7 @@ public class ChatHandler {
 		cmdHandlers = new ArrayList<Command>();
 		cmdHandlers.add(new CommandSpawnBomb());
 		
+		// I don't want this to run pointlessy
 		chatHook = new ChatHook("#lepakko683");
 		startChatHook();
 		

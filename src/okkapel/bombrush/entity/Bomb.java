@@ -2,10 +2,13 @@ package okkapel.bombrush.entity;
 
 import java.nio.ByteBuffer;
 
+import okkapel.bombrush.BombRush;
+import okkapel.bombrush.render.Particle;
 import okkapel.bombrush.util.Render;
 import okkapel.bombrush.util.RenderBufferGenerator;
 import okkapel.bombrush.util.Renderable;
 import okkapel.bombrush.util.Sprite;
+import okkapel.bombrush.util.Tile;
 
 import org.lwjgl.opengl.GL11;
 
@@ -25,6 +28,7 @@ public class Bomb extends EntityMobile implements Renderable {
 	private boolean dir = true;
 	private int maxFuse, fuse;
 	private int sparkAnim = 0;
+	private int power = 4;
 	
 	// TODO: explosion animation
 	public Bomb(int fuse) {
@@ -34,15 +38,15 @@ public class Bomb extends EntityMobile implements Renderable {
 		rbg.startCreatingBuffer();
 		
 		// Base bomb
-		rbg.addRect2D(coll.w/-2, coll.h/-2, coll.w/2, coll.h/2, 1f, 0f, 0f, 0f, 1f, bomb0.u1, bomb0.v1, bomb0.u2, bomb0.v2);
+		rbg.addRect2D(0f, 0f, coll.w, coll.h, 1f, 0f, 0f, 0f, 1f, bomb0.u1, bomb0.v1, bomb0.u2, bomb0.v2);
 		// fuse full
-		rbg.addRect2D(coll.w/-2, coll.h/-2, coll.w/2, coll.h/2, 1f, 1f, 1f, 1f, 1f, fuse1.u1, fuse1.v1, fuse1.u2, fuse1.v2);
+		rbg.addRect2D(0f, 0f, coll.w, coll.h, 1f, 1f, 1f, 1f, 1f, fuse1.u1, fuse1.v1, fuse1.u2, fuse1.v2);
 		// fuse half
-		rbg.addRect2D(coll.w/-2, coll.h/-2, coll.w/2, coll.h/2, 1f, 1f, 1f, 1f, 1f, fuse2.u1, fuse2.v1, fuse2.u2, fuse2.v2);
+		rbg.addRect2D(0f, 0f, coll.w, coll.h, 1f, 1f, 1f, 1f, 1f, fuse2.u1, fuse2.v1, fuse2.u2, fuse2.v2);
 		// spark 1
-		rbg.addRect2D(coll.w/-2, coll.h/-2, coll.w/2, coll.h/2, 1f, 1f, 1f, 1f, 1f, spark1.u1, spark1.v1, spark1.u2, spark1.v2);
+		rbg.addRect2D(0f, 0f, coll.w, coll.h, 1f, 1f, 1f, 1f, 1f, spark1.u1, spark1.v1, spark1.u2, spark1.v2);
 		// spark 2
-		rbg.addRect2D(coll.w/-2, coll.h/-2, coll.w/2, coll.h/2, 1f, 1f, 1f, 1f, 1f, spark2.u1, spark2.v1, spark2.u2, spark2.v2);
+		rbg.addRect2D(0f, 0f, coll.w, coll.h, 1f, 1f, 1f, 1f, 1f, spark2.u1, spark2.v1, spark2.u2, spark2.v2);
 		
 		renderData = rbg.createBuffer();
 	}
@@ -54,8 +58,9 @@ public class Bomb extends EntityMobile implements Renderable {
 		}
 		
 		fuse--;
-		if(fuse < 59) {
+		if(fuse < 1 && !dead) {
 			dead = true;
+			bombGoBoom();
 		}
 		
 		float fuseLeft = (float)(fuse) / (float)(maxFuse);
@@ -110,6 +115,42 @@ public class Bomb extends EntityMobile implements Renderable {
 		
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
+	}
+	
+	public void setPower(int newPower) {
+		power = newPower;
+	}
+	
+	//BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
+	private void bombGoBoom() { // TODO: damage on collision with explosion
+		int ox = (int)(coll.x/Tile.DEFAULT_TILE_WIDTH);
+		int oy = (int)(coll.y/Tile.DEFAULT_TILE_WIDTH);
+		for(int x=-power;x<power+1;x++) {
+			if(ox+x > -1 && ox+x < world.getWorldWidth() && x != 0) {
+				if(world.isEmpty(ox+x, oy)) {
+					BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
+				} else {
+					if(world.isBombable(ox+x,  oy)) {
+						world.setTile(ox+x, oy, Tile.empty.id);
+						BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
+					}
+					break;
+				}
+			}
+		}
+		for(int y=-power;y<power+1;y++) {
+			if(oy+y > -1 && oy+y < world.getWorldHeight()) {
+				if(world.isEmpty(ox, oy+y)) {
+					BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
+				} else {
+					if(world.isBombable(ox,  oy+y)) {
+						world.setTile(ox, oy+y, Tile.empty.id);
+						BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
+					}
+					break;
+				}
+			}
+		}
 	}
 	
 	private void updateColor() {

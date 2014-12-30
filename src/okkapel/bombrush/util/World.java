@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import okkapel.bombrush.BombRush;
 import okkapel.bombrush.entity.Entity;
+import okkapel.bombrush.render.ParticleRender;
 import okkapel.bombrush.render.TileRender;
 
 public abstract class World {
@@ -71,6 +72,24 @@ public abstract class World {
 				}
 			}
 		}
+	}
+	
+	public void setTile(int x, int y, int tile) {
+		if(x < worldWidth && y < worldHeight) {
+			tiles[y*worldWidth+x] = (short)tile;
+		}
+	}
+	
+	public int getTile(int x, int y) {
+		if(x < worldWidth && y < worldHeight) {
+			return (int)tiles[y*worldWidth+x];
+		}
+		return -1;
+	}
+	
+	public boolean isBombable(int x, int y) {
+		int tile = getTile(x,y);
+		return tile == -1 ? false : Tile.getTileFor(tile).isBombable();
 	}
 	
 	public boolean isEmpty(int x, int y) {

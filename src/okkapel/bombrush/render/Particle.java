@@ -1,8 +1,13 @@
 package okkapel.bombrush.render;
 
+import java.nio.ByteBuffer;
+
 import okkapel.bombrush.util.Sprite;
 
 public class Particle {
+	
+	public static Sprite sprFireBall; // 1725
+	
 	
 	protected boolean dead = false;
 	
@@ -44,5 +49,12 @@ public class Particle {
 		this.dx = dx;
 		this.dy = dy;
 		this.fri = fri;
+	}
+	
+	public void update(ByteBuffer renderData, int offset) {
+		life--;
+		if(life < 1) {
+			dead = true;
+		}
 	}
 }

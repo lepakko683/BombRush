@@ -11,6 +11,7 @@ import okkapel.bombrush.entity.Entity;
 import okkapel.bombrush.entity.EntityMobile;
 import okkapel.bombrush.entity.Player;
 import okkapel.bombrush.render.ChatHandler;
+import okkapel.bombrush.render.Particle;
 import okkapel.bombrush.render.ParticleRender;
 import okkapel.bombrush.render.TileRender;
 import okkapel.bombrush.util.Advancer;
@@ -69,6 +70,10 @@ public class BombRush {
 		return thePlayer;
 	}
 	
+	public static ParticleRender getFxRender() {
+		return fxRender;
+	}
+	
 	public static void main(String[] args) {
 		try {
 			Display.setDisplayMode(new DisplayMode(720, 720));
@@ -104,6 +109,8 @@ public class BombRush {
 		tr = new TileRender();
 		tr.init();
 		
+		fxRender = new ParticleRender(128);
+		
 		int glerr = GL_NO_ERROR;
 		while(!shouldClose()) {
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -121,17 +128,20 @@ public class BombRush {
 			playerMove(thePlayer);
 			glPushMatrix();
 			glTranslatef(720f/2f-thePlayer.getColl().w/2f-thePlayer.getX(), 720f/2f-thePlayer.getColl().h/2f-thePlayer.getY(), 0f);
-//			currWorld.renderWorld(tr);
+			glPushMatrix();
+
 			currWorld.render(tr);
 			
-			glPopMatrix();
+			glLoadIdentity();
 			bt.render();
-//			hello.render();
 			thePlayer.render();
 			
-			ch.renderChat();
+			glPopMatrix();
+			fxRender.render();
 			
-//			System.out.println("xdist: " + plr.getColl().xdistTo(currWorld.walls[0].coll) + " ydist: " + plr.getColl().ydistTo(currWorld.walls[0].coll));
+			glPopMatrix();
+			
+			ch.renderChat();
 			
 			advcr.advanceAll(1);
 			
@@ -176,6 +186,8 @@ public class BombRush {
 		Bomb.fuse2 = new Sprite(texSheet, 2, 128, 16);
 		Bomb.spark1 = new Sprite(texSheet, 3, 128, 16);
 		Bomb.spark2 = new Sprite(texSheet, 4, 128, 16);
+		
+		Particle.sprFireBall = new Sprite(texParts, 0, 256, 16);
 	}
 	
 	private static void playerMove(EntityMobile plr) {

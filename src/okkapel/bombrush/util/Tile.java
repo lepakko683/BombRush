@@ -13,7 +13,12 @@ public class Tile {
 	
 	// Tiles
 	public static final Tile empty = new Tile();
-	public static final Tile undestrolite = new Tile(1);
+	public static final Tile undestrolite = new Tile(1) {
+		public void init() {
+			setFlag(Flag.COLLIDABLE, true);
+			setFlag(Flag.INDESTRUCTIBLE, true);
+		}
+	};
 	public static final Tile hardstonite = new Tile();
 	public static final Tile stone = new Tile();
 	
@@ -29,7 +34,7 @@ public class Tile {
 	public Tile() {
 		id = indx;
 		if(indx != 0) { 
-			setFlag(Flag.COLLIDABLE, true);
+			init();
 		}
 //		bounds = new Rect(0f,0f, );
 		tiles[indx++] = this;
@@ -39,8 +44,11 @@ public class Tile {
 		this();
 		this.spriteId = spriteId;
 	}
+	
+	/** Meant for setting custom tile properties easily */
+	public void init() {}
 
-	private void setFlag(Flag flag, boolean value) {
+	protected void setFlag(Flag flag, boolean value) {
 		if(getFlag(flag)) {
 			flags &= ~(1 << flag.offset);
 		} else {
@@ -56,6 +64,10 @@ public class Tile {
 	
 	public boolean getFlag(Flag flag) {
 		return (flags & (1 << flag.offset)) != 0;
+	}
+	
+	public boolean isBombable() {
+		return getFlag(Flag.INDESTRUCTIBLE) ? false : !getFlag(Flag.BOMBPROOF);
 	}
 	
 	public final void setTiler(Tiler t) {
@@ -84,7 +96,10 @@ public class Tile {
 	
 	public static enum Flag {
 		COLLIDABLE(0),
-		TEST(1);
+		TEST(1),
+		BOMBPROOF(2),
+		INDESTRUCTIBLE(3),
+		MINEABLE(4);
 		
 		public final int offset;
 		

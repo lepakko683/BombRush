@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL11;
 
 
 public class ParticleRender {
+	
 	private ByteBuffer renderData;
 	private Particle[] particles;
 	
@@ -30,10 +31,12 @@ public class ParticleRender {
 				if(particles[i].dead) {
 					particles[i].setData(spr, life, x, y, 0f, 0f, 0f);
 					indx = i;
+					break;
 				}
 			} else {
 				particles[i] = new Particle(spr, life, x, y, 0f, 0f, 0f);
 				indx = i;
+				break;
 			}
 		}
 		
@@ -53,10 +56,12 @@ public class ParticleRender {
 				if(particles[i].dead) {
 					particles[i].setData(spr, life, x, y, dx, dy, fri);
 					indx = i;
+					break;
 				}
 			} else {
 				particles[i] = new Particle(spr, life, x, y, dx, dy, fri);
 				indx = i;
+				break;
 			}
 		}
 		
@@ -68,13 +73,18 @@ public class ParticleRender {
 	}
 	
 	public void render() {
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		for(int i=0;i<particles.length;i++) {
 			Particle p = particles[i];
 			if(p != null) {
 				if(!p.dead) {
 					GL11.glPushMatrix();
-					Render.renderVA(renderData, i*6, 6, BombRush.getPartTexId());
+					GL11.glTranslatef(p.x, p.y, 1f);
+					Render.renderVA(renderData, i*6, 6, p.spr.texture);
 					GL11.glPopMatrix();
+					
+					p.update(renderData, i*6);
 					
 					if(p.dx != 0f) {
 						p.x += p.dx;
@@ -110,6 +120,7 @@ public class ParticleRender {
 				}
 			}
 		}
+		GL11.glDisable(GL11.GL_BLEND);
 	}
 	
 }
