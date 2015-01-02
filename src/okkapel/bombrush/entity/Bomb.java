@@ -125,8 +125,8 @@ public class Bomb extends EntityMobile implements Renderable {
 	private void bombGoBoom() { // TODO: damage on collision with explosion
 		int ox = (int)(coll.x/Tile.DEFAULT_TILE_WIDTH);
 		int oy = (int)(coll.y/Tile.DEFAULT_TILE_WIDTH);
-		for(int x=-power;x<power+1;x++) {
-			if(ox+x > -1 && ox+x < world.getWorldWidth() && x != 0) {
+		for(int x=1;x<power+1;x++) {
+			if(ox+x < world.getWorldWidth()) {
 				if(world.isEmpty(ox+x, oy)) {
 					BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
 				} else {
@@ -138,8 +138,34 @@ public class Bomb extends EntityMobile implements Renderable {
 				}
 			}
 		}
-		for(int y=-power;y<power+1;y++) {
-			if(oy+y > -1 && oy+y < world.getWorldHeight()) {
+		for(int x=-1;x>-power-1;x--) {
+			if(ox+x > -1) {
+				if(world.isEmpty(ox+x, oy)) {
+					BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
+				} else {
+					if(world.isBombable(ox+x,  oy)) {
+						world.setTile(ox+x, oy, Tile.empty.id);
+						BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
+					}
+					break;
+				}
+			}
+		}
+		for(int y=1;y<power+1;y++) {
+			if(oy+y < world.getWorldHeight()) {
+				if(world.isEmpty(ox, oy+y)) {
+					BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
+				} else {
+					if(world.isBombable(ox,  oy+y)) {
+						world.setTile(ox, oy+y, Tile.empty.id);
+						BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
+					}
+					break;
+				}
+			}
+		}
+		for(int y=0;y>-power-1;y--) {
+			if(oy+y > -1) {
 				if(world.isEmpty(ox, oy+y)) {
 					BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
 				} else {

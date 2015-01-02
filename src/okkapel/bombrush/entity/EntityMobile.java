@@ -17,7 +17,10 @@ public class EntityMobile extends Entity {
 	
 	@Override
 	public void update() {
-		move();
+		if(dx != 0f || dy != 0f) {
+			move();
+		}
+		
 	}
 	
 	private float ndx = 0f, ndy = 0f;

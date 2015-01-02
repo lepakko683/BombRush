@@ -1,10 +1,12 @@
 package okkapel.bombrush.util;
 
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import okkapel.bombrush.BombRush;
@@ -34,6 +36,11 @@ public abstract class World {
 	
 	private int worldWidth;
 	private int worldHeight;
+	
+	private int renderChangeOrigin = 0;
+	private int renderChangeCap = -1;
+	
+	private ByteBuffer worldRenderData;
 
 	
 	private World() {
@@ -41,6 +48,7 @@ public abstract class World {
 		worldHeight = DEFAULT_WORLD_WIDTH;
 		setupWorld();
 		entities = new LinkedList<Entity>();
+		renderChangeCap = worldWidth*worldHeight;
 	}
 	
 	public int getWorldWidth() {
@@ -77,6 +85,8 @@ public abstract class World {
 	public void setTile(int x, int y, int tile) {
 		if(x < worldWidth && y < worldHeight) {
 			tiles[y*worldWidth+x] = (short)tile;
+			renderChangeOrigin = Math.min(y*worldWidth+x, renderChangeOrigin);
+			renderChangeCap = Math.max(y*worldWidth+x, renderChangeCap)+1;
 		}
 	}
 	
@@ -101,6 +111,27 @@ public abstract class World {
 		entities.add(e);
 	}
 	
+	public void altRenderWorld(TileRender tr) {
+		if(worldRenderData == null) {
+			worldRenderData = BufferUtils.createByteBuffer(tr.getLargestVC()*RenderBufferGenerator.DEFAULT_GL_STRIDE*tiles.length);
+		}
+		
+		if(renderChangeOrigin < tiles.length) {
+			RBE rbe = RBE.INSTANCE;
+			rbe.attachBuffer(worldRenderData);
+			int voffs = 0;
+			for(int i=renderChangeOrigin;i<renderChangeCap;i++) {
+				voffs = tr.getLargestVC() * i;
+				tr.updTileRender(Tile.getTileFor(tiles[i]), i%worldWidth, (int)(i/worldWidth), i, voffs, rbe);
+			}
+			rbe.finishEditing();
+			renderChangeOrigin=tiles.length;
+			renderChangeCap = 0;
+		}
+		
+		Render.renderVA(worldRenderData, 0, tr.getLargestVC()*tiles.length, BombRush.getTileTexId());
+	}
+	
 	public void renderWorld(TileRender tr) {
 		for(int i=0;i<tiles.length;i++) {
 			tr.renderTile(Tile.getTileFor(tiles[i]), i%DEFAULT_WORLD_WIDTH, (int)(i/DEFAULT_WORLD_WIDTH));
@@ -121,8 +152,11 @@ public abstract class World {
 			rand = new Random();
 		}
 		
-//		int max = Tile.getTileCount();
-		int max = 2;
+		for(int i=0;i<tiles.length;i++) {
+			if(0 < rand.nextInt(10)) {
+				tiles[i] = (short)Tile.stone.id;
+			}
+		}
 		
 		for(int y=0;y<worldHeight;y++) {
 			for(int x=0;x<worldWidth;x++) {

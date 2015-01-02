@@ -47,8 +47,8 @@ public class ChatHandler {
 		cmdHandlers.add(new CommandSpawnBomb());
 		
 		// I don't want this to run pointlessy
-		chatHook = new ChatHook("#lepakko683");
-		startChatHook();
+//		chatHook = new ChatHook("#lepakko683");
+//		startChatHook();
 		
 		renderData = BufferUtils.createByteBuffer(6 * RenderBufferGenerator.DEFAULT_GL_STRIDE + (CHATLINE_MAX_COUNT + 1) * CHATLINE_MAX_LENGTH * 6 * RenderBufferGenerator.DEFAULT_GL_STRIDE);
 		renderData.position(0);

@@ -112,6 +112,9 @@ public class BombRush {
 		fxRender = new ParticleRender(128);
 		
 		int glerr = GL_NO_ERROR;
+		
+		long logicTime = 0;
+		
 		while(!shouldClose()) {
 			glClear(GL_COLOR_BUFFER_BIT);
 			glLoadIdentity();
@@ -125,12 +128,19 @@ public class BombRush {
 			}
 			
 //			playerMove(bt);
+			
 			playerMove(thePlayer);
+			
 			glPushMatrix();
 			glTranslatef(720f/2f-thePlayer.getColl().w/2f-thePlayer.getX(), 720f/2f-thePlayer.getColl().h/2f-thePlayer.getY(), 0f);
 			glPushMatrix();
-
-			currWorld.render(tr);
+			
+			logicTime = System.currentTimeMillis();
+			
+//			currWorld.render(tr);
+			currWorld.altRenderWorld(tr);
+			
+			System.out.println("Logic time: " + (System.currentTimeMillis()-logicTime) + " ms");
 			
 			glLoadIdentity();
 			bt.render();
@@ -154,6 +164,7 @@ public class BombRush {
 				ticks++;
 				hello.setString("TICK: " + Integer.toString(ticks));
 			}
+			
 			Display.update();
 			Display.sync(60);
 		}

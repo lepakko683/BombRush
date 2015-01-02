@@ -126,6 +126,17 @@ public class RenderBufferGenerator {
 	
 	/**
 	 * Note: custom method in BombRush
+	 * Basically the same as createBuffer() but returns an array instead of a buffer
+	 */
+	public byte[] createArray() {
+		byte[] ret = new byte[arrayPos-origin];
+		System.arraycopy(dataArray, origin, ret, 0, arrayPos);
+		reset();
+		return ret;
+	}
+	
+	/**
+	 * Note: custom method in BombRush
 	 */
 	public int[] getSpriteOffsets() {
 		if(sprOffsAPos == 0) {

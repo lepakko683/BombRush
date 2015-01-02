@@ -12,15 +12,20 @@ public class Tile {
 	public static Tile[] tiles = new Tile[128];
 	
 	// Tiles
-	public static final Tile empty = new Tile();
+	public static final Tile empty = new Tile(0);
 	public static final Tile undestrolite = new Tile(1) {
 		public void init() {
 			setFlag(Flag.COLLIDABLE, true);
 			setFlag(Flag.INDESTRUCTIBLE, true);
 		}
 	};
+	public static final Tile stone = new Tile(2) {
+		public void init() {
+			setFlag(Flag.COLLIDABLE, true);
+			setFlag(Flag.MINEABLE, true);
+		}
+	};
 	public static final Tile hardstonite = new Tile();
-	public static final Tile stone = new Tile();
 	
 	
 	// Tile properties
