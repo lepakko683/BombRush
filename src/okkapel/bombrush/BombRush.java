@@ -95,8 +95,7 @@ public class BombRush {
 		advcr = new Advancer();
 		
 		Bomb bt = new Bomb(60*5);
-		RendStr hello = new RendStr("TICK: ", 64f, 0f, 0f);
-		int ticks = 0;
+		RendStr healthStr = new RendStr("HEALTH: ", 32f, 0f, 0f);
 		currWorld = World.debugWorld;
 		
 		thePlayer = new Player();
@@ -111,9 +110,11 @@ public class BombRush {
 		
 		fxRender = new ParticleRender(128);
 		
-		int glerr = GL_NO_ERROR;
+		boolean spaceDown = false;
 		
-		long logicTime = 0;
+		int plrOldHealth = 0;
+		
+		int glerr = GL_NO_ERROR;
 		
 		while(!shouldClose()) {
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -127,20 +128,23 @@ public class BombRush {
 				cycs++;
 			}
 			
-//			playerMove(bt);
-			
 			playerMove(thePlayer);
+			
+			if(!spaceDown && Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+				spaceDown = true;
+				Bomb nbomb = new Bomb(5*60);
+				nbomb.setWorldGridPos((int)((thePlayer.getX() + thePlayer.getColl().w/2f) / Tile.DEFAULT_TILE_WIDTH), (int)((thePlayer.getY() + thePlayer.getColl().h/2f) / Tile.DEFAULT_TILE_WIDTH));
+				currWorld.spawnEntity(nbomb);
+			}
+			if(spaceDown && !Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+				spaceDown = false;
+			}
 			
 			glPushMatrix();
 			glTranslatef(720f/2f-thePlayer.getColl().w/2f-thePlayer.getX(), 720f/2f-thePlayer.getColl().h/2f-thePlayer.getY(), 0f);
 			glPushMatrix();
 			
-			logicTime = System.currentTimeMillis();
-			
-//			currWorld.render(tr);
-			currWorld.altRenderWorld(tr);
-			
-			System.out.println("Logic time: " + (System.currentTimeMillis()-logicTime) + " ms");
+			currWorld.render(tr);
 			
 			glLoadIdentity();
 			bt.render();
@@ -151,6 +155,12 @@ public class BombRush {
 			
 			glPopMatrix();
 			
+			if(thePlayer.getHealth() != plrOldHealth) {
+				plrOldHealth = thePlayer.getHealth();
+				healthStr.setString("HEALTH: " + plrOldHealth);
+			}
+			healthStr.render();
+			
 			ch.renderChat();
 			
 			advcr.advanceAll(1);
@@ -158,11 +168,6 @@ public class BombRush {
 			glerr = glGetError();
 			if(glerr != GL_NO_ERROR) {
 				System.out.println(GLU.gluErrorString(glerr));
-			}
-			
-			if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-				ticks++;
-				hello.setString("TICK: " + Integer.toString(ticks));
 			}
 			
 			Display.update();

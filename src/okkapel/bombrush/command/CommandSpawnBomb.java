@@ -13,8 +13,9 @@ public class CommandSpawnBomb extends Command {
 	public void handleCommand(Player plr, Object[] params) {
 		int x = ((Integer)params[0]).intValue();
 		int y = ((Integer)params[1]).intValue();
-		Bomb spwn = new Bomb(60 * 5);
+		
 		if(plr.getWorldRef().isEmpty(x, y)) {
+			Bomb spwn = new Bomb(60 * 5);
 			spwn.setWorldGridPos(x, y);
 			plr.getWorldRef().spawnEntity(spwn);
 		}

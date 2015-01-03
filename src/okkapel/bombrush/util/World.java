@@ -63,9 +63,13 @@ public abstract class World {
 		return wbounds;
 	}
 	
+	public List<Entity> getEntities() {
+		return entities;
+	}
+	
 	public void render(TileRender tir) {
 		
-		renderWorld(tir);
+		altRenderWorld(tir);
 		
 		Iterator<Entity> iter = entities.iterator();
 		Entity tr;

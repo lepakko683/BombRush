@@ -17,6 +17,10 @@ public class Player extends EntityMobile implements Renderable {
 	private ByteBuffer renderData;
 	private AnimSprite testa;
 	
+	// properties
+	private int health;
+	private int invulTimer = 0;
+	
 	public Player() {
 		RenderBufferGenerator rbg = RenderBufferGenerator.INSTANCE;
 		rbg.startCreatingBuffer();
@@ -26,10 +30,16 @@ public class Player extends EntityMobile implements Renderable {
 		rbg.addSprite(coll.w/-2, coll.h/-2, coll.w/2, coll.h/2, 1f, 1f, 1f, 1f, 1f, Bomb.spark2);
 		renderData = rbg.createBuffer();
 		testa = new AnimSprite(rbg.getSpriteOffsets(), 10);
+		respawn();
 	}
 
 	@Override
 	public void render() {
+		
+		if(invulTimer > 0) {
+			invulTimer--;
+		}
+		
 		GL11.glPushMatrix();
 //		GL11.glTranslatef(coll.x, coll.y, 0f);
 		GL11.glTranslatef(720f/2f-coll.w/2f, 720f/2f-coll.h/2f, 0f);
@@ -42,6 +52,22 @@ public class Player extends EntityMobile implements Renderable {
 		
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
+	}
+	
+	public int getHealth() {
+		return health;
+	}
+	
+	/** Called after player death to reset properties for a new round. It's also called before starting a new game */
+	public void respawn() {
+		health = 5;
+	}
+	
+	public void damage(int amt) {
+		if(invulTimer <= 0) {
+			health -= amt;
+			invulTimer = 3*60;
+		}
 	}
 
 }
