@@ -3,6 +3,7 @@ package okkapel.bombrush.render;
 import java.nio.ByteBuffer;
 
 import okkapel.bombrush.BombRush;
+import okkapel.bombrush.Data;
 import okkapel.bombrush.util.RBE;
 import okkapel.bombrush.util.RendStr;
 
@@ -13,7 +14,7 @@ public class ChatLine {
 	private int ccount = 0;
 	
 	protected ChatLine(int first, int count) {
-		rinfo = new RenderSegm(first, count, BombRush.getFontTexId());
+		rinfo = new RenderSegm(first, count, Data.D.getFontTexId());
 	}
 	
 	protected void setText(String txt, ByteBuffer data) {

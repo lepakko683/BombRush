@@ -132,12 +132,12 @@ public class Bomb extends EntityMobile implements Renderable {
 		for(int x=1;x<power+1;x++) {
 			if(ox+x < world.getWorldWidth()) {
 				if(world.isEmpty(ox+x, oy)) {
-					BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
+					BombRush.getInGameState().fxRender.spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
 					xmax = x+ox;
 				} else {
 					if(world.isBombable(ox+x,  oy)) {
 						world.setTile(ox+x, oy, Tile.empty.id);
-						BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
+						BombRush.getInGameState().fxRender.spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
 						xmax = x+ox;
 					}
 					break;
@@ -147,12 +147,12 @@ public class Bomb extends EntityMobile implements Renderable {
 		for(int x=-1;x>-power-1;x--) {
 			if(ox+x > -1) {
 				if(world.isEmpty(ox+x, oy)) {
-					BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
+					BombRush.getInGameState().fxRender.spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
 					xmin = x+ox;
 				} else {
 					if(world.isBombable(ox+x,  oy)) {
 						world.setTile(ox+x, oy, Tile.empty.id);
-						BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
+						BombRush.getInGameState().fxRender.spawnParticle(Particle.sprFireBall, coll.x + x * Tile.DEFAULT_TILE_WIDTH, coll.y, 60, Tile.DEFAULT_TILE_WIDTH);
 						xmax = x+ox;
 					}
 					break;
@@ -162,12 +162,12 @@ public class Bomb extends EntityMobile implements Renderable {
 		for(int y=1;y<power+1;y++) {
 			if(oy+y < world.getWorldHeight()) {
 				if(world.isEmpty(ox, oy+y)) {
-					BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
+					BombRush.getInGameState().fxRender.spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
 					ymax = y+oy;
 				} else {
 					if(world.isBombable(ox,  oy+y)) {
 						world.setTile(ox, oy+y, Tile.empty.id);
-						BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
+						BombRush.getInGameState().fxRender.spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
 						ymax = y+oy;
 					}
 					break;
@@ -177,12 +177,12 @@ public class Bomb extends EntityMobile implements Renderable {
 		for(int y=0;y>-power-1;y--) {
 			if(oy+y > -1) {
 				if(world.isEmpty(ox, oy+y)) {
-					BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
+					BombRush.getInGameState().fxRender.spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
 					ymin = y+oy;
 				} else {
 					if(world.isBombable(ox,  oy+y)) {
 						world.setTile(ox, oy+y, Tile.empty.id);
-						BombRush.getFxRender().spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
+						BombRush.getInGameState().fxRender.spawnParticle(Particle.sprFireBall, coll.x, coll.y + y * Tile.DEFAULT_TILE_WIDTH, 60, Tile.DEFAULT_TILE_WIDTH);
 						ymin = y+oy;
 					}
 					break;
@@ -191,21 +191,21 @@ public class Bomb extends EntityMobile implements Renderable {
 		}
 		
 		// Horizontal
-		if(Rect.collides(BombRush.getPlayer().coll,
+		if(Rect.collides(BombRush.getInGameState().thePlayer.coll,
 				xmin*Tile.DEFAULT_TILE_WIDTH,
 				oy*Tile.DEFAULT_TILE_WIDTH,
 				xmax*Tile.DEFAULT_TILE_WIDTH,
 				(oy+1)*Tile.DEFAULT_TILE_WIDTH)) {
-			BombRush.getPlayer().damage(1);
+			BombRush.getInGameState().thePlayer.damage(1);
 		}
 		
 		// Vertical
-		if(Rect.collides(BombRush.getPlayer().coll,
+		if(Rect.collides(BombRush.getInGameState().thePlayer.coll,
 				ox*Tile.DEFAULT_TILE_WIDTH,
 				ymin*Tile.DEFAULT_TILE_WIDTH,
 				(ox+1)*Tile.DEFAULT_TILE_WIDTH,
 				ymax*Tile.DEFAULT_TILE_WIDTH)) {
-			BombRush.getPlayer().damage(1);
+			BombRush.getInGameState().thePlayer.damage(1);
 		}
 		
 	}

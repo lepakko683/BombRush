@@ -1,6 +1,7 @@
 package okkapel.bombrush.util;
 
 import okkapel.bombrush.BombRush;
+import okkapel.bombrush.Data;
 import okkapel.bombrush.render.ParticleRender;
 import okkapel.bombrush.render.TileRender.Tiler;
 
@@ -64,7 +65,7 @@ public class Tile {
 	public void renderParticles(ParticleRender fxr) {}
 	
 	public void setupRender(Tiler t) {
-		t.addSprite(0, 0, DEFAULT_TILE_WIDTH, DEFAULT_TILE_WIDTH, 1f, 1f, 1f, 1f, 1f, new Sprite(BombRush.getTileTexId(), spriteId, 256, 16));
+		t.addSprite(0, 0, DEFAULT_TILE_WIDTH, DEFAULT_TILE_WIDTH, 1f, 1f, 1f, 1f, 1f, new Sprite(Data.D.getTileTexId(), spriteId, 256, 16));
 	}
 	
 	public boolean getFlag(Flag flag) {

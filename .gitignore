@@ -36,3 +36,5 @@ atlassian-ide-plugin.xml
 
 # Temporary
 res/sounds/
+src/okkapel/bombrush/gui/Gui.java
+src/okkapel/bombrush/gui/GuiElement.java

@@ -68,6 +68,7 @@ public class ChatHandler {
 	
 	private int firstv = 6;
 	public void postLine(String text) {
+		System.out.println("post!");
 		if(!chatDisplay.isFull()) {
 			chatDisplay.addItem(new ChatLine(firstv, CHATLINE_MAX_LENGTH*6));
 			chatDisplay.getLast().setText(text, renderData);
@@ -159,11 +160,11 @@ public class ChatHandler {
 			if(cmdHandlers.get(i).isHandlerFor(params[0])) {
 				
 				if(params.length == 1) {
-					cmdHandlers.get(i).attemptHandle(BombRush.getPlayer(), null);					
+					cmdHandlers.get(i).attemptHandle(BombRush.getInGameState().thePlayer, null);					
 				} else {
 					String[] rpars = new String[params.length-1];
 					System.arraycopy(params, 1, rpars, 0, rpars.length);
-					cmdHandlers.get(i).attemptHandle(BombRush.getPlayer(), rpars);
+					cmdHandlers.get(i).attemptHandle(BombRush.getInGameState().thePlayer, rpars);
 				}
 				return;
 			}
@@ -205,6 +206,8 @@ public class ChatHandler {
 		
 		private List<String> recvMsgs;
 		private boolean canRead = true;
+		
+		private boolean ignoreMode = false;
 		
 		/** If set to true, all lines read after this should be discarded and the thread should stop asap */
 		private boolean stopping = false;
@@ -288,7 +291,7 @@ public class ChatHandler {
 				sendString(os, IRCMsg.pong(chan, m.getDataAsString()).getAsStringToSend());
 			} else if("PRIVMSG".equals(m.command)) {
 				String toAdd = m.getDataAsString();
-				if(toAdd != null) {
+				if(toAdd != null && !ignoreMode) {
 					if("jtv".equals(m.getUser())) {
 						return;
 					}

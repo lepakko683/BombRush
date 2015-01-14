@@ -10,7 +10,9 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import okkapel.bombrush.BombRush;
+import okkapel.bombrush.Data;
 import okkapel.bombrush.entity.Entity;
+import okkapel.bombrush.entity.Player;
 import okkapel.bombrush.render.ParticleRender;
 import okkapel.bombrush.render.TileRender;
 
@@ -31,6 +33,7 @@ public abstract class World {
 	
 	private Rect wbounds;
 	private List<Entity> entities;
+	private Entity playerRef;
 	
 	public short[] tiles;
 	
@@ -79,7 +82,7 @@ public abstract class World {
 			if(tr.isDead()) {
 				iter.remove();
 			} else {
-				if(tr instanceof Renderable && tr != BombRush.getPlayer()) {
+				if(tr instanceof Renderable && tr != playerRef) {
 					((Renderable)tr).render();
 				}
 			}
@@ -111,8 +114,20 @@ public abstract class World {
 	}
 	
 	public void spawnEntity(Entity e) {
+		if(e instanceof Player) {
+			if(playerRef != null) {
+				System.err.println("Can't add two players to a world!");
+			} else {
+				playerRef = e;
+			}
+		}
 		e.setWorldRef(this);
 		entities.add(e);
+	}
+	
+	public void reset() {
+		// TODO: implement
+		System.err.println("Called an unimplemented method: World.reset()!");
 	}
 	
 	public void altRenderWorld(TileRender tr) {
@@ -133,7 +148,7 @@ public abstract class World {
 			renderChangeCap = 0;
 		}
 		
-		Render.renderVA(worldRenderData, 0, tr.getLargestVC()*tiles.length, BombRush.getTileTexId());
+		Render.renderVA(worldRenderData, 0, tr.getLargestVC()*tiles.length, Data.D.getTileTexId());
 	}
 	
 	public void renderWorld(TileRender tr) {

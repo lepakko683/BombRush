@@ -1,12 +1,10 @@
 package okkapel.bombrush.entity;
 
-import okkapel.bombrush.BombRush;
 import okkapel.bombrush.util.MathHelper;
 import okkapel.bombrush.util.Rect;
 import okkapel.bombrush.util.Tile;
 import okkapel.bombrush.util.Tile.Flag;
 import okkapel.bombrush.util.Wall;
-import okkapel.bombrush.util.World;
 
 public class EntityMobile extends Entity {
 	protected float dx = 0f, dy = 0f;
@@ -30,10 +28,10 @@ public class EntityMobile extends Entity {
 		w.coll.w = Tile.DEFAULT_TILE_WIDTH;
 		w.coll.h = Tile.DEFAULT_TILE_WIDTH;
 		short id = (short) -1;
-		int worldWidth = BombRush.currWorld.getWorldWidth();
-		int worldHeight = BombRush.currWorld.getWorldHeight();
-		for(int i=0;i<BombRush.currWorld.tiles.length;i++) {
-			id = BombRush.currWorld.tiles[i];
+		int worldWidth = world.getWorldWidth();
+		int worldHeight = world.getWorldHeight();
+		for(int i=0;i<world.tiles.length;i++) {
+			id = world.tiles[i];
 			if(Tile.tiles[id].getFlag(Flag.COLLIDABLE)) {
 				ndx = 0f;
 				ndy = 0f;
@@ -76,7 +74,7 @@ public class EntityMobile extends Entity {
 			}
 		}
 		
-		Rect wbo = BombRush.currWorld.getWorldBounds();
+		Rect wbo = world.getWorldBounds();
 		if(dx < 0f) {
 			if(coll.x+dx < wbo.x && coll.x >= wbo.x) {
 				dx = coll.x-wbo.x;

@@ -19,6 +19,10 @@ public class Rect {
 		return false;
 	}
 	
+	public boolean wrapsAround(float ox, float oy) {
+		return (ox >= x && ox < x+w) && (oy >= y && ox < y+h); 
+	}
+	
 	public float xdistTo(Rect o) {
 		if(x < o.x) {
 			return o.x-(x+w);
