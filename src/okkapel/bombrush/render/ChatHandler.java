@@ -41,14 +41,17 @@ public class ChatHandler {
 	private ByteBuffer renderData;
 	private float fontSize = 16f;
 	
+	private static final boolean chatHookDisabled = true;
 	
 	public ChatHandler() {
 		cmdHandlers = new ArrayList<Command>();
 		cmdHandlers.add(new CommandSpawnBomb());
 		
 		// I don't want this to run pointlessy
-		chatHook = new ChatHook("#lepakko683");
-		startChatHook();
+		if(!chatHookDisabled) {
+			chatHook = new ChatHook("#lepakko683");
+			startChatHook();
+		}
 		
 		renderData = BufferUtils.createByteBuffer(6 * RenderBufferGenerator.DEFAULT_GL_STRIDE + (CHATLINE_MAX_COUNT + 1) * CHATLINE_MAX_LENGTH * 6 * RenderBufferGenerator.DEFAULT_GL_STRIDE);
 		renderData.position(0);
@@ -96,6 +99,22 @@ public class ChatHandler {
 		} catch(Throwable e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void enableIgnoreMode() {
+		if(chatHook == null) {
+			return;
+		}
+		
+		chatHook.setIgnoreMode(true);
+	}
+	
+	public void disableIgnoreMode() {
+		if(chatHook == null) {
+			return;
+		}
+		
+		chatHook.setIgnoreMode(false);
 	}
 	
 	private void setupFont() {
@@ -358,6 +377,12 @@ public class ChatHandler {
 		
 		public synchronized void setStopping(boolean v) {
 			stopping = v;
+		}
+		
+		public synchronized void setIgnoreMode(boolean v) {
+			if(ignoreMode != v) {
+				ignoreMode = v;
+			}
 		}
 		
 		private boolean appendToInputBuffer(byte b) {

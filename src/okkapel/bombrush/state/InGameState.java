@@ -90,7 +90,6 @@ public class InGameState implements IState {
 		
 		ch.renderChat();
 		
-		
 		Display.update();
 		Display.sync(60);
 	}
@@ -125,11 +124,18 @@ public class InGameState implements IState {
 		
 		currWorld.reset();
 		currWorld.spawnEntity(thePlayer);
+		
+		ch.disableIgnoreMode();
 	}
 
 	@Override
 	public String getStateName() {
 		return "In-Game";
+	}
+
+	@Override
+	public void switchFrom() {
+		ch.enableIgnoreMode();
 	}
 
 }

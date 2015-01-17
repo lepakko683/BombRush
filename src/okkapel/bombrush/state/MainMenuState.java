@@ -56,4 +56,9 @@ public class MainMenuState implements IState {
 		return "Menu";
 	}
 
+	@Override
+	public void switchFrom() {
+		
+	}
+
 }

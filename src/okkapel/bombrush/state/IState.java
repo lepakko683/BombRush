@@ -8,6 +8,8 @@ public interface IState {
 	
 	public void deInit();
 	
+	public void switchFrom();
+	
 	public String getStateName();
 	
 }
