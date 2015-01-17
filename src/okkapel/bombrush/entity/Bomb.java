@@ -4,12 +4,12 @@ import java.nio.ByteBuffer;
 
 import okkapel.bombrush.BombRush;
 import okkapel.bombrush.render.Particle;
+import okkapel.bombrush.tile.Tile;
 import okkapel.bombrush.util.Rect;
 import okkapel.bombrush.util.Render;
 import okkapel.bombrush.util.RenderBufferGenerator;
 import okkapel.bombrush.util.Renderable;
 import okkapel.bombrush.util.Sprite;
-import okkapel.bombrush.util.Tile;
 
 import org.lwjgl.opengl.GL11;
 
@@ -87,9 +87,6 @@ public class Bomb extends EntityMobile implements Renderable {
 		GL11.glPushMatrix();
 		GL11.glTranslatef(coll.x, coll.y, 0f);
 		
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		
 		renderVA(renderData, 0, 6, bomb0.texture);
 		
 		if(fuseLeft > 0.66f) {
@@ -114,7 +111,6 @@ public class Bomb extends EntityMobile implements Renderable {
 		
 		sparkAnim++;
 		
-		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 	}
 	

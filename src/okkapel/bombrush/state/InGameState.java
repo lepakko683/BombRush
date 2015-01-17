@@ -19,8 +19,8 @@ import okkapel.bombrush.entity.Player;
 import okkapel.bombrush.render.ChatHandler;
 import okkapel.bombrush.render.ParticleRender;
 import okkapel.bombrush.render.TileRender;
+import okkapel.bombrush.tile.Tile;
 import okkapel.bombrush.util.RendStr;
-import okkapel.bombrush.util.Tile;
 import okkapel.bombrush.util.World;
 
 public class InGameState implements IState {

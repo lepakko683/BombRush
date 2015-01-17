@@ -18,10 +18,10 @@ import okkapel.bombrush.render.TileRender;
 import okkapel.bombrush.state.IState;
 import okkapel.bombrush.state.InGameState;
 import okkapel.bombrush.state.MainMenuState;
+import okkapel.bombrush.tile.Tile;
 import okkapel.bombrush.util.Advancer;
 import okkapel.bombrush.util.RendStr;
 import okkapel.bombrush.util.Sprite;
-import okkapel.bombrush.util.Tile;
 import okkapel.bombrush.util.World;
 
 import org.lwjgl.BufferUtils;
@@ -129,6 +129,9 @@ public class BombRush {
 		Bomb.spark2 = new Sprite(Data.D.getSpriteTexId(), 4, 128, 16);
 		
 		Particle.sprFireBall = new Sprite(Data.D.getPartTexId(), 0, 256, 16);
+		
+		// World bgs
+		World.debugWorld.setupBackground();
 		
 		// States
 		states = new IState[2];

@@ -35,7 +35,6 @@ public class Player extends EntityMobile implements Renderable {
 
 	@Override
 	public void render() {
-		
 		if(invulTimer > 0) {
 			invulTimer--;
 		}
@@ -44,13 +43,9 @@ public class Player extends EntityMobile implements Renderable {
 //		GL11.glTranslatef(coll.x, coll.y, 0f);
 		GL11.glTranslatef(720f/2f-coll.w/2f, 720f/2f-coll.h/2f, 0f);
 		
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		
 		Render.renderVA(renderData, 0, 6, 0);
 //		Render.renderVA(renderData, testa.updGetCurr(), 6, Bomb.spark1.texture);
 		
-		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 	}
 	

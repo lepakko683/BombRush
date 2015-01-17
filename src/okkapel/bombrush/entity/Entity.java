@@ -2,9 +2,9 @@ package okkapel.bombrush.entity;
 
 import java.nio.ByteBuffer;
 
+import okkapel.bombrush.tile.Tile;
 import okkapel.bombrush.util.Pos;
 import okkapel.bombrush.util.Rect;
-import okkapel.bombrush.util.Tile;
 import okkapel.bombrush.util.World;
 
 import org.lwjgl.opengl.GL11;

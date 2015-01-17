@@ -15,6 +15,7 @@ import okkapel.bombrush.entity.Entity;
 import okkapel.bombrush.entity.Player;
 import okkapel.bombrush.render.ParticleRender;
 import okkapel.bombrush.render.TileRender;
+import okkapel.bombrush.tile.Tile;
 
 public abstract class World {
 	
@@ -44,7 +45,9 @@ public abstract class World {
 	private int renderChangeCap = -1;
 	
 	private ByteBuffer worldRenderData;
-
+	private ByteBuffer backgroundData;
+	
+	private Sprite bgTex;
 	
 	private World() {
 		worldWidth = DEFAULT_WORLD_WIDTH;
@@ -52,6 +55,10 @@ public abstract class World {
 		setupWorld();
 		entities = new LinkedList<Entity>();
 		renderChangeCap = worldWidth*worldHeight;
+	}
+	
+	protected void setBGTex(Sprite tex) {
+		this.bgTex = tex;
 	}
 	
 	public int getWorldWidth() {
@@ -70,10 +77,36 @@ public abstract class World {
 		return entities;
 	}
 	
+	public void setupBackground() {
+		if(backgroundData != null) {
+			return;
+		}
+		bgTex = new Sprite(Data.D.getTileTexId(), 0, 256, 16);
+		RenderBufferGenerator rbg = RenderBufferGenerator.INSTANCE;
+		rbg.startCreatingBuffer();
+		rbg.setAddSprOffs(false);
+		for(int y=0;y<worldHeight;y++) {
+			for(int x=0;x<worldWidth;x++) {
+				rbg.addSprite(x*Tile.DEFAULT_TILE_WIDTH, y*Tile.DEFAULT_TILE_WIDTH, (x+1)*Tile.DEFAULT_TILE_WIDTH, (y+1)*Tile.DEFAULT_TILE_WIDTH, 1f, 1f, 1f, 1f, 1f, bgTex);	
+			}
+		}
+		backgroundData = rbg.createBuffer();
+	}
+	
 	public void render(TileRender tir) {
+		Render.renderVA(backgroundData, 0, tiles.length*6, Data.D.getTileTexId());
+		
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
 		altRenderWorld(tir);
 		
+		renderEntities();
+		
+		GL11.glDisable(GL11.GL_BLEND);
+	}
+	
+	private void renderEntities() {
 		Iterator<Entity> iter = entities.iterator();
 		Entity tr;
 		while(iter.hasNext()) {

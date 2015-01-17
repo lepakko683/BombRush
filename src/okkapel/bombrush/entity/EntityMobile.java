@@ -1,9 +1,9 @@
 package okkapel.bombrush.entity;
 
+import okkapel.bombrush.tile.Tile;
+import okkapel.bombrush.tile.Tile.Flag;
 import okkapel.bombrush.util.MathHelper;
 import okkapel.bombrush.util.Rect;
-import okkapel.bombrush.util.Tile;
-import okkapel.bombrush.util.Tile.Flag;
 import okkapel.bombrush.util.Wall;
 
 public class EntityMobile extends Entity {

@@ -6,11 +6,11 @@ import org.lwjgl.opengl.GL11;
 
 import okkapel.bombrush.BombRush;
 import okkapel.bombrush.Data;
+import okkapel.bombrush.tile.Tile;
 import okkapel.bombrush.util.RBE;
 import okkapel.bombrush.util.Render;
 import okkapel.bombrush.util.RenderBufferGenerator;
 import okkapel.bombrush.util.Sprite;
-import okkapel.bombrush.util.Tile;
 
 public class TileRender {
 	
@@ -51,7 +51,6 @@ public class TileRender {
 				tr.tileRdata = rbg.createArray();
 			}
 		}
-		
 	}
 	
 	public ByteBuffer getRenderData() {

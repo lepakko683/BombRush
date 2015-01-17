@@ -1,9 +1,11 @@
-package okkapel.bombrush.util;
+package okkapel.bombrush.tile;
 
 import okkapel.bombrush.BombRush;
 import okkapel.bombrush.Data;
 import okkapel.bombrush.render.ParticleRender;
 import okkapel.bombrush.render.TileRender.Tiler;
+import okkapel.bombrush.util.Rect;
+import okkapel.bombrush.util.Sprite;
 
 public class Tile {
 	
@@ -13,7 +15,7 @@ public class Tile {
 	public static Tile[] tiles = new Tile[128];
 	
 	// Tiles
-	public static final Tile empty = new Tile(0);
+	public static final Tile empty = new TileEmpty(0);
 	public static final Tile undestrolite = new Tile(1) {
 		public void init() {
 			setFlag(Flag.COLLIDABLE, true);
@@ -51,13 +53,17 @@ public class Tile {
 		this.spriteId = spriteId;
 	}
 	
+	public int getSpriteId() {
+		return spriteId;
+	}
+	
 	/** Meant for setting custom tile properties easily */
 	public void init() {}
 
 	protected void setFlag(Flag flag, boolean value) {
-		if(getFlag(flag)) {
+		if(getFlag(flag) && !value) {
 			flags &= ~(1 << flag.offset);
-		} else {
+		} else if(!getFlag(flag) && value) {
 			flags |= (1 << flag.offset);
 		}
 	}
