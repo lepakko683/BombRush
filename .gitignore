@@ -2,8 +2,8 @@
 # Typical unwanted stuff
 *.jar
 *.class
-/bin
-/jars
+bin/
+jars/
 
 # Eclipse
 *.classpath
@@ -12,4 +12,7 @@
 
 # vim
 *.swp
+
+# Misc
+src/okkapel/bombrush/_irc/
 
