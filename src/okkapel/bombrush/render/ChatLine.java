@@ -3,6 +3,7 @@ package okkapel.bombrush.render;
 import java.nio.ByteBuffer;
 
 import okkapel.bombrush.BombRush;
+import okkapel.bombrush.Data;
 import okkapel.bombrush.util.RBE;
 import okkapel.bombrush.util.RendStr;
 
@@ -13,10 +14,11 @@ public class ChatLine {
 	private int ccount = 0;
 	
 	protected ChatLine(int first, int count) {
-		rinfo = new RenderSegm(first, count, BombRush.getFontTexId());
+		rinfo = new RenderSegm(first, count, Data.D.getFontTexId());
 	}
 	
 	protected void setText(String txt, ByteBuffer data) {
+		ccount = 0;
 		RBE rbe = RBE.INSTANCE;
 		rbe.attachBuffer(data);
 		rbe.setVertexOffset(rinfo.first);
@@ -29,7 +31,6 @@ public class ChatLine {
 				xind = ((int)c) % 32;
 				yind = (int) ((int)c) / 32;
 				rbe.editRect2DUV(xind*RendStr.charWidth, yind*RendStr.charWidth, (xind+1)*RendStr.charWidth, (yind+1)*RendStr.charWidth);
-				
 				ccount++;
 			}
 			

@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import celestibytes.lib.Tuple;
 import okkapel.bombrush.BombRush;
+import okkapel.bombrush.Data;
 
 public class RendStr implements Renderable {
 	
@@ -357,7 +358,7 @@ public class RendStr implements Renderable {
 		
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
-		Render.renderVA(renderData, 0, rendChrCount*6, BombRush.getFontTexId());
+		Render.renderVA(renderData, 0, rendChrCount*6, Data.D.getFontTexId());
 		
 		GL11.glDisable(GL11.GL_BLEND);
 		

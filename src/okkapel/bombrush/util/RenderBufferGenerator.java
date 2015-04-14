@@ -18,6 +18,7 @@ public class RenderBufferGenerator {
 	/** Note: BombRush exclusive field */
 	private int sprOffsAPos = 0;
 	
+	private boolean addSprOffs = true;
 	private boolean errored = false;
 	private byte[] dataArray;
 	private int arrayPos = 0;
@@ -38,6 +39,7 @@ public class RenderBufferGenerator {
 	public void startCreatingBuffer(/*int dataTypes*/) {
 //		bufferDataTypes = dataTypes;
 		sprOffsAPos = 0;
+		addSprOffs = true;
 	}
 	
 	public void startCreatingSubBuffer(/*int dataTypes*/) {
@@ -48,6 +50,10 @@ public class RenderBufferGenerator {
 			System.err.println("Already creating sub buffer!");
 			errored = true;
 		}
+	}
+	
+	public void setAddSprOffs(boolean v) {
+		addSprOffs = v;
 	}
 	
 	private void reset() {
@@ -106,7 +112,9 @@ public class RenderBufferGenerator {
 	 * Note: custom method in BombRush
 	 */
 	public void addSprite(float x1, float y1, float x2, float y2, float z, float r, float g, float b, float a, Sprite spr) {
-		spriteOffsets[sprOffsAPos++] = vcount;
+		if(addSprOffs) {
+			spriteOffsets[sprOffsAPos++] = vcount;
+		}
 		addVertexWColorWUV(x1, y1, z, r, g, b, a, spr.u1, spr.v1);
 		addVertexWColorWUV(x1, y2, z, r, g, b, a, spr.u1, spr.v2);
 		addVertexWColorWUV(x2, y2, z, r, g, b, a, spr.u2, spr.v2);
@@ -120,6 +128,17 @@ public class RenderBufferGenerator {
 		ByteBuffer ret = BufferUtils.createByteBuffer(arrayPos-origin);
 		ret.put(dataArray, origin, arrayPos);
 		ret.flip();
+		reset();
+		return ret;
+	}
+	
+	/**
+	 * Note: custom method in BombRush
+	 * Basically the same as createBuffer() but returns an array instead of a buffer
+	 */
+	public byte[] createArray() {
+		byte[] ret = new byte[arrayPos-origin];
+		System.arraycopy(dataArray, origin, ret, 0, arrayPos);
 		reset();
 		return ret;
 	}

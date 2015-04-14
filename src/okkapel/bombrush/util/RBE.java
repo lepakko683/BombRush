@@ -80,6 +80,14 @@ public class RBE {
 		editXYZ(x1, y1, z);
 	}
 	
+	/** Very specific method :P "editVertexUsingArrayExceptForPos" */
+	public void editVertexUAEFPos(float x, float y, float z, byte[] rgbauv, int offset) {
+		ab.put(rgbauv, offset, 2*4+4);
+		floatToBytes(x, buffer); ab.put(buffer, 0, 4);
+		floatToBytes(y, buffer); ab.put(buffer, 0, 4);
+		floatToBytes(z, buffer); ab.put(buffer, 0, 4);
+	}
+	
 	/** It is expected that the buffer's current position is right before the vertex to be edited = before the uv */
 	public void editUV(float u, float v) {
 		floatToBytes(u, buffer); ab.put(buffer, 0, 4);
@@ -135,6 +143,36 @@ public class RBE {
 			arr[1] = (byte) ((flt >> 16) & 255);
 			arr[0] = (byte) ((flt >> 24) & 255);
 		}
+	}
+	
+	private static int orderIntBytes(byte[] data, int first) {
+		int ret = 0;
+		
+		if(ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
+			ret |= data[first];
+			ret |= (data[first+1] << 8);
+			ret |= (data[first+2] << 16);
+			ret |= (data[first+3] << 24);
+		} else {
+			ret |= (data[first] << 24);
+			ret |= (data[first+1] << 16);
+			ret |= (data[first+2] << 8);
+			ret |= data[first+3];
+		}
+		
+		return ret;
+	}
+	
+	public static float getVXFromBytes(int voffs, byte[] data) {
+		return Float.intBitsToFloat(orderIntBytes(data, voffs*RenderBufferGenerator.DEFAULT_GL_STRIDE+Render.OFFSET_X));
+	}
+	
+	public static float getVYFromBytes(int voffs, byte[] data) {
+		return Float.intBitsToFloat(orderIntBytes(data, voffs*RenderBufferGenerator.DEFAULT_GL_STRIDE+Render.OFFSET_Y));
+	}
+	
+	public static float getVZFromBytes(int voffs, byte[] data) {
+		return Float.intBitsToFloat(orderIntBytes(data, voffs*RenderBufferGenerator.DEFAULT_GL_STRIDE+Render.OFFSET_Z));
 	}
 	
 }

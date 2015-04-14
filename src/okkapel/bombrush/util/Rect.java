@@ -19,6 +19,10 @@ public class Rect {
 		return false;
 	}
 	
+	public boolean wrapsAround(float ox, float oy) {
+		return (ox >= x && ox < x+w) && (oy >= y && ox < y+h); 
+	}
+	
 	public float xdistTo(Rect o) {
 		if(x < o.x) {
 			return o.x-(x+w);
@@ -33,5 +37,14 @@ public class Rect {
 		} else {
 			return y-(o.y+o.h);
 		}
+	}
+	
+	public static boolean collides(Rect r, float x1, float y1, float x2, float y2) {
+		if(x2 >= r.x && x1 < r.x+r.w) {
+			if(y2 >= r.y && y1 < r.y+r.h) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

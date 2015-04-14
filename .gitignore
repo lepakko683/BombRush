@@ -1,3 +1,14 @@
+# Mobile Tools for Java (J2ME)
+.mtj.tmp
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# Gradle
+.gradle
+build
+gradle-app.setting
+gradle.properties
 
 # Typical unwanted stuff
 *.jar
@@ -5,10 +16,20 @@
 bin/
 jars/
 
-# Eclipse
-*.classpath
-*.project
-.settings/
+# eclipse
+.settings
+.metadata
+.classpath
+.project
+bin
+
+# IntelliJ IDEA
+.idea
+*.iml
+*.ipr
+*.iws
+out
+atlassian-ide-plugin.xml
 
 # vim
 *.swp
@@ -16,3 +37,7 @@ jars/
 # Misc
 src/okkapel/bombrush/_irc/
 
+# Temporary
+res/sounds/
+src/okkapel/bombrush/gui/Gui.java
+src/okkapel/bombrush/gui/GuiElement.java
